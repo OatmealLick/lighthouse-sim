@@ -7,7 +7,7 @@ import org.wingtree.immutables.Bean;
 @Bean
 public interface Coords
 {
-    float getX();
+    double getX();
 
-    float getY();
+    double getY();
 }

@@ -4,11 +4,12 @@ import com.google.common.collect.ImmutableSet;
 import org.immutables.value.Value;
 import org.wingtree.immutables.Bean;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Value.Immutable
 @Bean
-public interface StartupParameters
+public interface StartupParameters //TODO add neo4j -> startup parameters conversion and logic
 {
     Set<Lantern> getLanterns();
 
@@ -25,7 +26,7 @@ public interface StartupParameters
         return StartupParametersBuilder.builder()
                 .withInternalActors(ImmutableSet.of(
                         InternalActorBuilder.builder()
-                                .withId("KR01112")
+                                .withId(Optional.of("KR01112"))
                                 .withCurrentCoords(CoordsBuilder.of(0, 0))
                                 .withTargetCoords(CoordsBuilder.of(5, 5))
                                 .withType(ActorType.VEHICLE)

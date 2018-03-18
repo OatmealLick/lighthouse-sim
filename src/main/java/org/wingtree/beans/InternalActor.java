@@ -1,21 +1,92 @@
 package org.wingtree.beans;
 
-import org.immutables.value.Value;
-import org.wingtree.immutables.Bean;
-
+import java.util.Objects;
 import java.util.Optional;
 
-@Value.Immutable
-@Bean
-public interface InternalActor
+public class InternalActor
 {
-    ActorType getType();
+    private final ActorType type;
+    private final float velocity;
+    private final Optional<String> id;
+    private Coords currentCoords;
+    private Coords targetCoords;
 
-    float getVelocity();
+    InternalActor(final ActorType type,
+                  final float velocity,
+                  final Optional<String> id,
+                  final Coords currentCoords,
+                  final Coords targetCoords)
+    {
+        this.type = type;
+        this.velocity = velocity;
+        this.id = id;
+        this.currentCoords = currentCoords;
+        this.targetCoords = targetCoords;
+    }
 
-    Optional<String> getId();
+    public ActorType getType()
+    {
+        return type;
+    }
 
-    Coords getCurrentCoords();
+    public float getVelocity()
+    {
+        return velocity;
+    }
 
-    Coords getTargetCoords();
+    public Optional<String> getId()
+    {
+        return id;
+    }
+
+    public Coords getCurrentCoords()
+    {
+        return currentCoords;
+    }
+
+    public Coords getTargetCoords()
+    {
+        return targetCoords;
+    }
+
+    public void setCurrentCoords(final Coords currentCoords)
+    {
+        this.currentCoords = currentCoords;
+    }
+
+    public void setTargetCoords(final Coords targetCoords)
+    {
+        this.targetCoords = targetCoords;
+    }
+
+    @Override
+    public boolean equals(final Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final InternalActor that = (InternalActor) o;
+        return Float.compare(that.velocity, velocity) == 0 &&
+                type == that.type &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(currentCoords, that.currentCoords) &&
+                Objects.equals(targetCoords, that.targetCoords);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(type, velocity, id, currentCoords, targetCoords);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "InternalActor{" +
+                "type=" + type +
+                ", velocity=" + velocity +
+                ", id=" + id +
+                ", currentCoords=" + currentCoords +
+                ", targetCoords=" + targetCoords +
+                '}';
+    }
 }
