@@ -12,6 +12,6 @@ public class Algebra
         final double distanceBetweenCoords =
                 Math.sqrt(Math.pow(homeCoords.getX() - targetCoords.getX(), 2) +
                         Math.pow(homeCoords.getY() - targetCoords.getY(), 2));
-        return radius > distanceBetweenCoords;
+        return radius >= distanceBetweenCoords;
     }
 }

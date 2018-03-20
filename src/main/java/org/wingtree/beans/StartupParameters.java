@@ -1,7 +1,6 @@
 package org.wingtree.beans;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import org.immutables.value.Value;
 import org.wingtree.immutables.Bean;
 
@@ -28,7 +27,6 @@ public interface StartupParameters //TODO add neo4j -> startup parameters conver
     {
         final Camera camera = CameraBuilder.builder()
                 .withLanternId("lantern_001")
-                .withActorsInView(Sets.newHashSet())
                 .withRadius(0.7f)
                 .build();
         final MovementSensor movementSensor = MovementSensorBuilder.builder()

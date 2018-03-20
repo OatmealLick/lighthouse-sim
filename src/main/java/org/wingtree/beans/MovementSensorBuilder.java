@@ -6,8 +6,8 @@ import static com.google.common.base.Preconditions.checkState;
 public class MovementSensorBuilder
 {
     private String lanternId;
-    private boolean sensingMovement = false;
-    private double radius = -1;
+    private boolean sensingMovement;
+    private double radius;
 
     public static MovementSensorBuilder builder()
     {

@@ -6,19 +6,19 @@ import java.util.Optional;
 public class InternalActor
 {
     private final ActorType type;
-    private final double velocity;
+    private final double velocityInMetersPerSec;
     private final Optional<String> id;
     private Coords currentCoords;
     private Coords targetCoords;
 
     InternalActor(final ActorType type,
-                  final double velocity,
+                  final double velocityInMetersPerSec,
                   final Optional<String> id,
                   final Coords currentCoords,
                   final Coords targetCoords)
     {
         this.type = type;
-        this.velocity = velocity;
+        this.velocityInMetersPerSec = velocityInMetersPerSec;
         this.id = id;
         this.currentCoords = currentCoords;
         this.targetCoords = targetCoords;
@@ -29,9 +29,9 @@ public class InternalActor
         return type;
     }
 
-    public double getVelocity()
+    public double getVelocityInMetersPerSec()
     {
-        return velocity;
+        return velocityInMetersPerSec;
     }
 
     public Optional<String> getId()
@@ -65,7 +65,7 @@ public class InternalActor
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final InternalActor that = (InternalActor) o;
-        return Double.compare(that.velocity, velocity) == 0 &&
+        return Double.compare(that.velocityInMetersPerSec, velocityInMetersPerSec) == 0 &&
                 type == that.type &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(currentCoords, that.currentCoords) &&
@@ -75,7 +75,7 @@ public class InternalActor
     @Override
     public int hashCode()
     {
-        return Objects.hash(type, velocity, id, currentCoords, targetCoords);
+        return Objects.hash(type, velocityInMetersPerSec, id, currentCoords, targetCoords);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class InternalActor
     {
         return "InternalActor{" +
                 "type=" + type +
-                ", velocity=" + velocity +
+                ", velocityInMetersPerSec=" + velocityInMetersPerSec +
                 ", id=" + id +
                 ", currentCoords=" + currentCoords +
                 ", targetCoords=" + targetCoords +

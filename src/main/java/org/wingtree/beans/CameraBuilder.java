@@ -11,7 +11,7 @@ public class CameraBuilder
 {
     private String lanternId;
     private Set<InternalActor> actorsInView = Sets.newHashSet();
-    private double radius = -1;
+    private double radius;
 
     public static CameraBuilder builder()
     {
