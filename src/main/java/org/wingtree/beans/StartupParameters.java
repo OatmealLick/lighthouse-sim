@@ -1,6 +1,7 @@
 package org.wingtree.beans;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import org.immutables.value.Value;
 import org.wingtree.immutables.Bean;
 
@@ -9,8 +10,10 @@ import java.util.Set;
 
 @Value.Immutable
 @Bean
+//todo think of better name - JobParameters?
 public interface StartupParameters //TODO add neo4j -> startup parameters conversion and logic
 {
+    //todo this will be actually a graph
     Set<Lantern> getLanterns();
 
     Set<InternalActor> getInternalActors();
@@ -23,33 +26,38 @@ public interface StartupParameters //TODO add neo4j -> startup parameters conver
 
     static StartupParameters dummy()
     {
-        return StartupParametersBuilder.builder()
+        final Camera camera = CameraBuilder.builder()
+                .withLanternId("lantern_001")
+                .withActorsInView(Sets.newHashSet())
+                .withRadius(0.7f)
+                .build();
+        final MovementSensor movementSensor = MovementSensorBuilder.builder()
+                .withLanternId("lantern_002")
+                .withRadius(2.5f)
+                .withSensingMovement(false)
+                .build();
+        return ImmutableStartupParameters.builder()
                 .withInternalActors(ImmutableSet.of(
                         InternalActorBuilder.builder()
                                 .withId(Optional.of("KR01112"))
-                                .withCurrentCoords(CoordsBuilder.of(0, 0))
-                                .withTargetCoords(CoordsBuilder.of(5, 5))
+                                .withCurrentCoords(ImmutableCoords.of(0, 0))
+                                .withTargetCoords(ImmutableCoords.of(5, 5))
                                 .withType(ActorType.VEHICLE)
                                 .withVelocity(1)
                                 .build()))
-                .withLanterns(ImmutableSet.of(LanternBuilder.builder()
-                                .withCoords(CoordsBuilder.of(5, 5))
+                .withLanterns(ImmutableSet.of(
+                        ImmutableLantern.builder()
+                                .withCoords(ImmutableCoords.of(5, 5))
                                 .withId("lantern_001")
+                                .withTrackingDevices(ImmutableSet.of(camera))
                                 .build(),
-                        LanternBuilder.builder()
-                                .withCoords(CoordsBuilder.of(3, 4))
+                        ImmutableLantern.builder()
+                                .withCoords(ImmutableCoords.of(3, 4))
                                 .withId("lantern_002")
+                                .withTrackingDevices(ImmutableSet.of(movementSensor))
                                 .build()))
-                .withCameras(ImmutableSet.of(CameraBuilder.builder()
-                        .withLanternId("lantern_001")
-                        .withInternalActors(ImmutableSet.of())
-                        .withRadius(0.7f)
-                        .build()))
-                .withMovementSensors(ImmutableSet.of(MovementSensorBuilder.builder()
-                        .withLanternId("lantern_002")
-                        .withRadius(0.5f)
-                        .withSensingMovement(false)
-                        .build()))
+                .withCameras(ImmutableSet.of(camera))
+                .withMovementSensors(ImmutableSet.of(movementSensor))
                 .withMovementAndDirectionSensors(ImmutableSet.of())
                 .build();
     }

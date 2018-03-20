@@ -6,13 +6,13 @@ import java.util.Optional;
 public class InternalActor
 {
     private final ActorType type;
-    private final float velocity;
+    private final double velocity;
     private final Optional<String> id;
     private Coords currentCoords;
     private Coords targetCoords;
 
     InternalActor(final ActorType type,
-                  final float velocity,
+                  final double velocity,
                   final Optional<String> id,
                   final Coords currentCoords,
                   final Coords targetCoords)
@@ -29,7 +29,7 @@ public class InternalActor
         return type;
     }
 
-    public float getVelocity()
+    public double getVelocity()
     {
         return velocity;
     }
@@ -65,7 +65,7 @@ public class InternalActor
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final InternalActor that = (InternalActor) o;
-        return Float.compare(that.velocity, velocity) == 0 &&
+        return Double.compare(that.velocity, velocity) == 0 &&
                 type == that.type &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(currentCoords, that.currentCoords) &&

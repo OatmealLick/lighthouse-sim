@@ -17,7 +17,6 @@ import java.lang.annotation.Target;
         get = {"is*", "get*"},
         init = "with*",
         typeAbstract = {"*"},
-        typeImmutable = "*Builder",
         visibility = Value.Style.ImplementationVisibility.PUBLIC,
         depluralize = true,
         allParameters = true)

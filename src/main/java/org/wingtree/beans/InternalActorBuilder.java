@@ -7,7 +7,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class InternalActorBuilder
 {
     private ActorType type;
-    private float velocity;
+    private double velocity;
     private Optional<String> id;
     private Coords currentCoords;
     private Coords targetCoords;
@@ -27,7 +27,7 @@ public class InternalActorBuilder
         return this;
     }
 
-    public InternalActorBuilder withVelocity(final float velocity)
+    public InternalActorBuilder withVelocity(final double velocity)
     {
         this.velocity = velocity;
         return this;
