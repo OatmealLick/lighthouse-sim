@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Graphs
 {
@@ -34,7 +35,9 @@ public class Graphs
         while (!nodesToVisit.isEmpty()) {
             T currentNode = nodesToVisit.get(0);
             visitedNodes.add(currentNode);
-            nodesToVisit.addAll(graph.adjacentNodes(currentNode));
+            nodesToVisit.addAll(graph.adjacentNodes(currentNode).stream()
+                    .filter(node -> !visitedNodes.contains(node))
+                    .collect(Collectors.toCollection()));
         }
 
         return graph.nodes().size() == visitedNodes.size();
