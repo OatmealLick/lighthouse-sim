@@ -10,13 +10,8 @@ import org.wingtree.simulation.SimulationStateProvider;
 @Controller("simulation.controller")
 public class SimulationController
 {
-    public SimulationStateProvider simulationStateProvider;
-
     @Autowired
-    public SimulationController(final SimulationStateProvider simulationStateProvider)
-    {
-        this.simulationStateProvider = simulationStateProvider;
-    }
+    private SimulationStateProvider simulationStateProvider;
 
     @RequestMapping("/lantern/{lanternId}")
     public Lantern getLantern(@PathVariable final String lanternId)

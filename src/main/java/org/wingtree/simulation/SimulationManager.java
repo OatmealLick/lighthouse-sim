@@ -9,22 +9,30 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-import org.wingtree.beans.StartupParameters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SimulationManager
 {
     public static final String TIME_INTERVAL = "time.interval";
     public static final String STARTUP_PARAMETERS = "startup.parameters";
 
-    private final StartupParameters startupParameters;
-    private final long intervalInMillis;
+    @Autowired
+    private SimulationStateProvider simulationStateProvider;
+
+
+//    @Autowired
+//    private StartupParameters startupParameters;
+//    @Autowired
+//    private long intervalInMillis;
 
     //TODO consider merging interval to startup params
-    public SimulationManager(final StartupParameters startupParameters, final long intervalInMillis)
-    {
-        this.startupParameters = startupParameters;
-        this.intervalInMillis = intervalInMillis;
-    }
+//    public SimulationManager(final StartupParameters startupParameters, final long intervalInMillis)
+//    {
+//        this.startupParameters = startupParameters;
+//        this.intervalInMillis = intervalInMillis;
+//    }
 
     public void run() throws SchedulerException, InterruptedException
     {
@@ -33,12 +41,13 @@ public class SimulationManager
                 .withIdentity("simulation.step")
                 .build();
         final JobDataMap dataMap = jobDetail.getJobDataMap();
-        dataMap.put(TIME_INTERVAL, intervalInMillis);
-        dataMap.put(STARTUP_PARAMETERS, startupParameters);
+//        final StartupParameters startupParameters = quartzJobFactory.getStartupParameters();
+//        dataMap.put(TIME_INTERVAL, intervalInMillis);
+//        dataMap.put(STARTUP_PARAMETERS, startupParameters);
         final Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity("trigger")
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                        .withIntervalInMilliseconds(intervalInMillis)
+//                        .withIntervalInMilliseconds(intervalInMillis)
                         .repeatForever())
                 .startNow()
                 .build();

@@ -2,13 +2,13 @@ package org.wingtree.beans;
 
 import com.google.common.collect.ImmutableSet;
 import org.immutables.value.Value;
-import org.wingtree.immutables.Bean;
+import org.wingtree.immutables.Immutable;
 
 import java.util.Optional;
 import java.util.Set;
 
 @Value.Immutable
-@Bean
+@Immutable
 //todo think of better name - JobParameters?
 public interface StartupParameters //TODO add neo4j -> startup parameters conversion and logic
 {

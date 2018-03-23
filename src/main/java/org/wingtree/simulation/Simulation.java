@@ -4,6 +4,7 @@ import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.wingtree.beans.Coords;
 import org.wingtree.beans.ImmutableCoords;
@@ -16,6 +17,8 @@ public class Simulation implements Job
 {
     @Autowired
     private SimulationStateProvider simulationStateProvider;
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Override
     public void execute(final JobExecutionContext jobExecutionContext)
@@ -38,7 +41,6 @@ public class Simulation implements Job
                 .withMovementSensors(startupParameters.getMovementSensors())
                 .withMovementAndDirectionSensors(startupParameters.getMovementAndDirectionSensors())
                 .build());
-
 
         startupParameters.getInternalActors().forEach(System.out::println);
         startupParameters.getLanterns().forEach(lantern -> lantern.getTrackingDevices().forEach(System.out::println));

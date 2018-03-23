@@ -20,6 +20,6 @@ import java.lang.annotation.Target;
         visibility = Value.Style.ImplementationVisibility.PUBLIC,
         depluralize = true,
         allParameters = true)
-public @interface Bean
+public @interface Immutable
 {
 }
