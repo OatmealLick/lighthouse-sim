@@ -1,59 +1,52 @@
 package org.wingtree.simulation;
 
-import org.quartz.Job;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.wingtree.beans.Coords;
 import org.wingtree.beans.ImmutableCoords;
-import org.wingtree.beans.ImmutableSimulationState;
 import org.wingtree.beans.InternalActor;
-import org.wingtree.beans.StartupParameters;
+import org.wingtree.beans.SimulationState;
+
+import java.util.TimerTask;
 
 @Component
-public class Simulation implements Job
+public class Simulation extends TimerTask
 {
-    @Autowired
-    private SimulationStateProvider simulationStateProvider;
     @Autowired
     private ApplicationContext applicationContext;
 
     @Override
-    public void execute(final JobExecutionContext jobExecutionContext)
+    public void run()
     {
-        //TODO if this is to work as http server this step needs to set some object properties, and this object will
-        // be then queried for data. Remember about synchronized IO to this object
-        final JobDataMap dataMap = jobExecutionContext.getMergedJobDataMap();
-        final long intervalInMillis = dataMap.getLong(SimulationManager.TIME_INTERVAL);
-        final StartupParameters startupParameters =
-                (StartupParameters) dataMap.get(SimulationManager.STARTUP_PARAMETERS);
-        startupParameters.getInternalActors().forEach(actor -> updateActor(actor, intervalInMillis));
-        startupParameters.getLanterns().forEach(lantern ->
+        final SimulationState simulationState =
+                (SimulationState) applicationContext.getAutowireCapableBeanFactory().getBean("simulation-state");
+        final long intervalInMillis =
+                (long) applicationContext.getAutowireCapableBeanFactory().getBean("interval-in-millis");
+
+        simulationState.getInternalActors().forEach(actor -> updateActor(actor, intervalInMillis));
+        simulationState.getLanterns().forEach(lantern ->
                 lantern.getTrackingDevices().forEach(trackingDevice ->
-                        trackingDevice.updateState(lantern.getCoords(), startupParameters.getInternalActors())));
+                        trackingDevice.updateState(lantern.getCoords(), simulationState.getInternalActors())));
 
-        simulationStateProvider.set(ImmutableSimulationState.builder()
-                .withCameras(startupParameters.getCameras())
-                .withInternalActors(startupParameters.getInternalActors())
-                .withLanterns(startupParameters.getLanterns())
-                .withMovementSensors(startupParameters.getMovementSensors())
-                .withMovementAndDirectionSensors(startupParameters.getMovementAndDirectionSensors())
-                .build());
-
-        startupParameters.getInternalActors().forEach(System.out::println);
-        startupParameters.getLanterns().forEach(lantern -> lantern.getTrackingDevices().forEach(System.out::println));
+        simulationState.getInternalActors().forEach(System.out::println);
+        simulationState.getLanterns().forEach(lantern -> lantern.getTrackingDevices().forEach(System.out::println));
     }
 
     private void updateActor(final InternalActor actor, final long intervalInMillis)
     {
         //TODO add behavior for situations when actor reaches the point
-        final double distance = calculateDistance(actor, intervalInMillis);
-        final double degrees = calculateDegrees(actor);
-        final double newX = distance * Math.cos(degrees);
-        final double newY = distance * Math.sin(degrees);
-        actor.setCurrentCoords(ImmutableCoords.of(newX, newY));
+        // TODO this below stopped working for some reason
+//        final double distance = calculateDistance(actor, intervalInMillis);
+//        final double degrees = calculateDegrees(actor);
+//        final double newX = distance * Math.cos(degrees);
+//        final double newY = distance * Math.sin(degrees);
+//        actor.setCurrentCoords(ImmutableCoords.of(newX, newY));
+
+        //todo replace this when the rest works, this only simulates movement to test that actor is updated
+        final Coords currentCoords = actor.getCurrentCoords();
+        actor.setCurrentCoords(ImmutableCoords.of(currentCoords.getX()*2+intervalInMillis, currentCoords.getY()
+                *2+intervalInMillis));
     }
 
     private double calculateDistance(final InternalActor actor, final long intervalInMillis)
