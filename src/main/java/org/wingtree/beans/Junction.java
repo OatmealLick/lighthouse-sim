@@ -5,7 +5,7 @@ import org.wingtree.immutables.Bean;
 
 @Value.Immutable
 @Bean
-public interface Lantern
+public interface Junction
 {
     String getId();
 

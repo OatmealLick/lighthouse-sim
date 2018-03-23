@@ -9,19 +9,19 @@ public class InternalActor
     private final float velocity;
     private final Optional<String> id;
     private Coords currentCoords;
-    private Coords targetCoords;
+    private Junction target;
 
     InternalActor(final ActorType type,
                   final float velocity,
                   final Optional<String> id,
                   final Coords currentCoords,
-                  final Coords targetCoords)
+                  final Junction target)
     {
         this.type = type;
         this.velocity = velocity;
         this.id = id;
         this.currentCoords = currentCoords;
-        this.targetCoords = targetCoords;
+        this.target = target;
     }
 
     public ActorType getType()
@@ -44,9 +44,14 @@ public class InternalActor
         return currentCoords;
     }
 
+    public Junction getTarget()
+    {
+        return target;
+    }
+
     public Coords getTargetCoords()
     {
-        return targetCoords;
+        return target.getCoords();
     }
 
     public void setCurrentCoords(final Coords currentCoords)
@@ -54,28 +59,28 @@ public class InternalActor
         this.currentCoords = currentCoords;
     }
 
-    public void setTargetCoords(final Coords targetCoords)
+    public void setTarget(final Junction target)
     {
-        this.targetCoords = targetCoords;
+        this.target = target;
     }
 
     @Override
-    public boolean equals(final Object o)
+    public boolean equals(Object o)
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final InternalActor that = (InternalActor) o;
+        InternalActor that = (InternalActor) o;
         return Float.compare(that.velocity, velocity) == 0 &&
                 type == that.type &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(currentCoords, that.currentCoords) &&
-                Objects.equals(targetCoords, that.targetCoords);
+                Objects.equals(target, that.target);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(type, velocity, id, currentCoords, targetCoords);
+        return Objects.hash(type, velocity, id, currentCoords, target);
     }
 
     @Override

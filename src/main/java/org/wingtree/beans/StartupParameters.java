@@ -11,7 +11,7 @@ import java.util.Set;
 @Bean
 public interface StartupParameters //TODO add neo4j -> startup parameters conversion and logic
 {
-    Set<Lantern> getLanterns();
+    Route getRoute();
 
     Set<InternalActor> getInternalActors();
 
@@ -23,33 +23,32 @@ public interface StartupParameters //TODO add neo4j -> startup parameters conver
 
     static StartupParameters dummy()
     {
+        Junction start = JunctionBuilder.builder().withCoords(CoordsBuilder.of(5, 5)).withId("lantern_001");
+        Junction end = JunctionBuilder.builder().withCoords(CoordsBuilder.of(3, 4)).withId("lantern_002");
+        Route straightRoute = RouteBuilder.builder().withRoad(start, end).build();
+
         return StartupParametersBuilder.builder()
                 .withInternalActors(ImmutableSet.of(
                         InternalActorBuilder.builder()
                                 .withId(Optional.of("KR01112"))
-                                .withCurrentCoords(CoordsBuilder.of(0, 0))
-                                .withTargetCoords(CoordsBuilder.of(5, 5))
+                                .withCurrentCoords(start.getCoords())
+                                .withTarget(end)
                                 .withType(ActorType.VEHICLE)
                                 .withVelocity(1)
                                 .build()))
-                .withLanterns(ImmutableSet.of(LanternBuilder.builder()
-                                .withCoords(CoordsBuilder.of(5, 5))
-                                .withId("lantern_001")
-                                .build(),
-                        LanternBuilder.builder()
-                                .withCoords(CoordsBuilder.of(3, 4))
-                                .withId("lantern_002")
+                .withRoute(straightRoute)
+                .withCameras(ImmutableSet.of(
+                        CameraBuilder.builder()
+                                .withLanternId("lantern_001")
+                                .withInternalActors(ImmutableSet.of())
+                                .withRadius(0.7f)
                                 .build()))
-                .withCameras(ImmutableSet.of(CameraBuilder.builder()
-                        .withLanternId("lantern_001")
-                        .withInternalActors(ImmutableSet.of())
-                        .withRadius(0.7f)
-                        .build()))
-                .withMovementSensors(ImmutableSet.of(MovementSensorBuilder.builder()
-                        .withLanternId("lantern_002")
-                        .withRadius(0.5f)
-                        .withSensingMovement(false)
-                        .build()))
+                .withMovementSensors(ImmutableSet.of(
+                        MovementSensorBuilder.builder()
+                                .withLanternId("lantern_002")
+                                .withRadius(0.5f)
+                                .withSensingMovement(false)
+                                .build()))
                 .withMovementAndDirectionSensors(ImmutableSet.of())
                 .build();
     }
