@@ -3,13 +3,20 @@ package org.wingtree.simulation;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.wingtree.beans.Coords;
 import org.wingtree.beans.ImmutableCoords;
+import org.wingtree.beans.ImmutableSimulationState;
 import org.wingtree.beans.InternalActor;
 import org.wingtree.beans.StartupParameters;
 
+@Component
 public class Simulation implements Job
 {
+    @Autowired
+    private SimulationStateProvider simulationStateProvider;
+
     @Override
     public void execute(final JobExecutionContext jobExecutionContext)
     {
@@ -23,6 +30,14 @@ public class Simulation implements Job
         startupParameters.getLanterns().forEach(lantern ->
                 lantern.getTrackingDevices().forEach(trackingDevice ->
                         trackingDevice.updateState(lantern.getCoords(), startupParameters.getInternalActors())));
+
+        simulationStateProvider.set(ImmutableSimulationState.builder()
+                .withCameras(startupParameters.getCameras())
+                .withInternalActors(startupParameters.getInternalActors())
+                .withLanterns(startupParameters.getLanterns())
+                .withMovementSensors(startupParameters.getMovementSensors())
+                .withMovementAndDirectionSensors(startupParameters.getMovementAndDirectionSensors())
+                .build());
 
 
         startupParameters.getInternalActors().forEach(System.out::println);
