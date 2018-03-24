@@ -1,27 +1,33 @@
 package org.wingtree.simulation;
 
-import org.quartz.Job;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 import org.wingtree.beans.*;
 
-public class Simulation implements Job
+import java.util.TimerTask;
+
+@Component
+public class Simulation extends TimerTask
 {
+    @Autowired
+    private ApplicationContext applicationContext;
+
     @Override
-    public void execute(final JobExecutionContext jobExecutionContext)
+    public void run()
     {
-        // TODO if this is to work as http server this step needs to set some object properties, and this object will
-        // be then queried for data. Remember about synchronized IO to this object
-        final JobDataMap dataMap = jobExecutionContext.getMergedJobDataMap();
-        final long intervalInMillis = dataMap.getLong(SimulationManager.TIME_INTERVAL);
-        final StartupParameters startupParameters =
-                (StartupParameters) dataMap.get(SimulationManager.STARTUP_PARAMETERS);
-        startupParameters.getInternalActors().forEach(actor -> updateActor(actor, intervalInMillis, startupParameters));
-        //TODO update cameras
-        //TODO update movement sensors
-        //TODO update movement and direction sensors
-        //TODO what are lanterns for even
-        startupParameters.getInternalActors().forEach(System.out::println);
+        final SimulationState simulationState =
+                (SimulationState) applicationContext.getAutowireCapableBeanFactory().getBean("simulation-state");
+        final long intervalInMillis =
+                (long) applicationContext.getAutowireCapableBeanFactory().getBean("interval-in-millis");
+
+        simulationState.getInternalActors().forEach(actor -> updateActor(actor, intervalInMillis));
+        simulationState.getLanterns().forEach(lantern ->
+                lantern.getTrackingDevices().forEach(trackingDevice ->
+                        trackingDevice.updateState(lantern.getCoords(), simulationState.getInternalActors())));
+
+        simulationState.getInternalActors().forEach(System.out::println);
+        simulationState.getLanterns().forEach(lantern -> lantern.getTrackingDevices().forEach(System.out::println));
     }
 
     public void updateActor(final InternalActor actor, final long interval, final StartupParameters startupParameters)
@@ -46,7 +52,7 @@ public class Simulation implements Job
 
     private double calculateDistanceToCover(final InternalActor actor, final long interval)
     {
-        return actor.getVelocity() * interval;
+        return actor.getVelocityInMetersPerSec() * interval;
     }
 
     private double calculateDistanceBetween(Coords currentCoords, Coords targetCoords)

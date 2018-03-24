@@ -6,19 +6,19 @@ import java.util.Optional;
 public class InternalActor
 {
     private final ActorType type;
-    private final float velocity;
+    private final double velocityInMetersPerSec;
     private final Optional<String> id;
     private Coords currentCoords;
     private Junction target;
 
     InternalActor(final ActorType type,
-                  final float velocity,
+                  final double velocityInMetersPerSec,
                   final Optional<String> id,
                   final Coords currentCoords,
                   final Junction target)
     {
         this.type = type;
-        this.velocity = velocity;
+        this.velocityInMetersPerSec = velocityInMetersPerSec;
         this.id = id;
         this.currentCoords = currentCoords;
         this.target = target;
@@ -29,9 +29,9 @@ public class InternalActor
         return type;
     }
 
-    public float getVelocity()
+    public double getVelocityInMetersPerSec()
     {
-        return velocity;
+        return velocityInMetersPerSec;
     }
 
     public Optional<String> getId()
@@ -65,12 +65,12 @@ public class InternalActor
     }
 
     @Override
-    public boolean equals(Object o)
+    public boolean equals(final Object o)
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        InternalActor that = (InternalActor) o;
-        return Float.compare(that.velocity, velocity) == 0 &&
+        final InternalActor that = (InternalActor) o;
+        return Double.compare(that.velocityInMetersPerSec, velocityInMetersPerSec) == 0 &&
                 type == that.type &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(currentCoords, that.currentCoords) &&
@@ -80,7 +80,7 @@ public class InternalActor
     @Override
     public int hashCode()
     {
-        return Objects.hash(type, velocity, id, currentCoords, target);
+        return Objects.hash(type, velocityInMetersPerSec, id, currentCoords, target);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class InternalActor
     {
         return "InternalActor{" +
                 "type=" + type +
-                ", velocity=" + velocity +
+                ", velocityInMetersPerSec=" + velocityInMetersPerSec +
                 ", id=" + id +
                 ", currentCoords=" + currentCoords +
                 ", target=" + target +
