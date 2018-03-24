@@ -15,9 +15,8 @@ public class Route
 
     public Junction getNextRandomizedTarget(Junction currentJunction)
     {
-        List<Junction> adjacentJunctions = new ArrayList<>(routeGraph.adjacentNodes(currentJunction));
+        List<Junction> adjacentJunctions = new ArrayList<>(routeGraph.successors(currentJunction));
         Collections.shuffle(adjacentJunctions);
-        // TODO can throw exception if graph is not a loop (if some node is a dead end) - forbid it when building?
         return adjacentJunctions.get(0);
     }
 }

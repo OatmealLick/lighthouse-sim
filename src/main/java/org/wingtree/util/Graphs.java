@@ -33,11 +33,11 @@ public class Graphs
         nodesToVisit.add(initialNode);
 
         while (!nodesToVisit.isEmpty()) {
-            T currentNode = nodesToVisit.get(0);
+            T currentNode = nodesToVisit.remove(0);
             visitedNodes.add(currentNode);
-            nodesToVisit.addAll(graph.adjacentNodes(currentNode).stream()
+            nodesToVisit.addAll(graph.successors(currentNode).stream()
                     .filter(node -> !visitedNodes.contains(node))
-                    .collect(Collectors.toCollection()));
+                    .collect(Collectors.toList()));
         }
 
         return graph.nodes().size() == visitedNodes.size();
@@ -47,8 +47,8 @@ public class Graphs
     {
         MutableGraph<T> transposedGraph = GraphBuilder.directed().allowsSelfLoops(true).build();
         graph.nodes().forEach(
-                node -> graph.adjacentNodes(node).forEach(
-                        adjacentNode -> transposedGraph.putEdge(adjacentNode, node)));
+                node -> graph.successors(node).forEach(
+                        successor -> transposedGraph.putEdge(successor, node)));
         return transposedGraph;
     }
 }

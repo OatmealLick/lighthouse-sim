@@ -23,8 +23,8 @@ public interface StartupParameters //TODO add neo4j -> startup parameters conver
 
     static StartupParameters dummy()
     {
-        Junction start = JunctionBuilder.builder().withCoords(CoordsBuilder.of(5, 5)).withId("lantern_001");
-        Junction end = JunctionBuilder.builder().withCoords(CoordsBuilder.of(3, 4)).withId("lantern_002");
+        Junction start = JunctionBuilder.builder().withCoords(CoordsBuilder.of(5, 5)).withId("lantern_001").build();
+        Junction end = JunctionBuilder.builder().withCoords(CoordsBuilder.of(3, 4)).withId("lantern_002").build();
         Route straightRoute = RouteBuilder.builder().withRoad(start, end).build();
 
         return StartupParametersBuilder.builder()
