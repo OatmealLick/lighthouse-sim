@@ -4,14 +4,14 @@ import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.MutableGraph;
 import org.junit.jupiter.api.Test;
-import org.wingtree.beans.CoordsBuilder;
+import org.wingtree.beans.ImmutableCoords;
+import org.wingtree.beans.ImmutableJunction;
 import org.wingtree.beans.Junction;
-import org.wingtree.beans.JunctionBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class GraphsTest
 {
@@ -126,10 +126,10 @@ class GraphsTest
     private List<Junction> createNodesForSampleGraph()
     {
         List<Junction> nodes = new ArrayList<>();
-        nodes.add(JunctionBuilder.builder().withCoords(CoordsBuilder.of(0, 0)).withId("0").build());
-        nodes.add(JunctionBuilder.builder().withCoords(CoordsBuilder.of(4, 2)).withId("1").build());
-        nodes.add(JunctionBuilder.builder().withCoords(CoordsBuilder.of(6, 6)).withId("2").build());
-        nodes.add(JunctionBuilder.builder().withCoords(CoordsBuilder.of(2, 5)).withId("3").build());
+        nodes.add(ImmutableJunction.builder().withCoords(ImmutableCoords.of(0, 0)).withId("0").build());
+        nodes.add(ImmutableJunction.builder().withCoords(ImmutableCoords.of(4, 2)).withId("1").build());
+        nodes.add(ImmutableJunction.builder().withCoords(ImmutableCoords.of(6, 6)).withId("2").build());
+        nodes.add(ImmutableJunction.builder().withCoords(ImmutableCoords.of(2, 5)).withId("3").build());
         return nodes;
     }
 }

@@ -11,8 +11,7 @@ import java.util.Set;
 @Immutable
 public interface SimulationState
 {
-    //todo this will be actually a graph
-    Set<Lantern> getLanterns();
+    Route getRoute();
 
     Set<InternalActor> getInternalActors();
 
@@ -25,34 +24,43 @@ public interface SimulationState
     static SimulationState dummy()
     {
         final Camera camera = CameraBuilder.builder()
-                .withLanternId("lantern_001")
+                .withLanternId("1")
                 .withRadius(0.7f)
                 .build();
         final MovementSensor movementSensor = MovementSensorBuilder.builder()
-                .withLanternId("lantern_002")
+                .withLanternId("2")
                 .withRadius(2.5f)
                 .withSensingMovement(false)
+                .build();
+        final Junction one = ImmutableJunction.builder()
+                .withCoords(ImmutableCoords.of(0, 0))
+                .withId("1")
+                .withTrackingDevices(ImmutableSet.of(camera))
+                .build();
+        final Junction two = ImmutableJunction.builder()
+                .withCoords(ImmutableCoords.of(0, 10))
+                .withId("2")
+                .withTrackingDevices(ImmutableSet.of(movementSensor))
+                .build();
+        final Junction three = ImmutableJunction.builder()
+                .withCoords(ImmutableCoords.of(10, 0))
+                .withId("3")
+                .withTrackingDevices(ImmutableSet.of())
                 .build();
         return ImmutableSimulationState.builder()
                 .withInternalActors(ImmutableSet.of(
                         InternalActorBuilder.builder()
                                 .withId(Optional.of("KR01112"))
                                 .withCurrentCoords(ImmutableCoords.of(0, 0))
-                                .withTargetCoords(ImmutableCoords.of(5, 5))
+                                .withTarget(two)
                                 .withType(ActorType.VEHICLE)
                                 .withVelocity(1)
                                 .build()))
-                .withLanterns(ImmutableSet.of(
-                        ImmutableLantern.builder()
-                                .withCoords(ImmutableCoords.of(5, 5))
-                                .withId("lantern_001")
-                                .withTrackingDevices(ImmutableSet.of(camera))
-                                .build(),
-                        ImmutableLantern.builder()
-                                .withCoords(ImmutableCoords.of(3, 4))
-                                .withId("lantern_002")
-                                .withTrackingDevices(ImmutableSet.of(movementSensor))
-                                .build()))
+                .withRoute(RouteBuilder.builder()
+                                   .withRoad(one, two)
+                                   .withRoad(two, three)
+                                   .withRoad(three, one)
+                                   .build())
                 .withCameras(ImmutableSet.of(camera))
                 .withMovementSensors(ImmutableSet.of(movementSensor))
                 .withMovementAndDirectionSensors(ImmutableSet.of())
