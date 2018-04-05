@@ -10,8 +10,13 @@ import java.util.TimerTask;
 @Component
 public class Simulation extends TimerTask
 {
-    @Autowired
     private ApplicationContext applicationContext;
+
+    @Autowired
+    public Simulation(final ApplicationContext applicationContext)
+    {
+        this.applicationContext = applicationContext;
+    }
 
     @Override
     public void run()
@@ -26,8 +31,9 @@ public class Simulation extends TimerTask
                 junction.getTrackingDevices().forEach(trackingDevice ->
                         trackingDevice.updateState(junction.getCoords(), simulationState.getInternalActors())));
 
-        simulationState.getInternalActors().forEach(System.out::println);
-        simulationState.getRoute().getJunctions().forEach(junction -> junction.getTrackingDevices().forEach(System.out::println));
+        // FIXME this was actually causing the StackOverflowException ??
+        // simulationState.getInternalActors().forEach(System.out::println);
+        // simulationState.getRoute().getJunctions().forEach(junction -> junction.getTrackingDevices().forEach(System.out::println));
     }
 
     public void updateActor(final InternalActor actor, final long intervalInMillis, final SimulationState simulationState)
@@ -78,6 +84,6 @@ public class Simulation extends TimerTask
         final double distanceX = actor.getTargetCoords().getX() - actor.getCurrentCoords().getX();
         final double distanceY = actor.getTargetCoords().getY() - actor.getCurrentCoords().getY();
 
-        return Math.atan(distanceY / distanceX);
+        return Math.atan2(distanceY, distanceX);
     }
 }

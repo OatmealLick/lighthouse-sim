@@ -2,12 +2,15 @@ package org.wingtree.simulation;
 
 import com.google.common.collect.ImmutableSet;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
 import org.wingtree.beans.*;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.withSettings;
 
 class SimulationTest
 {
@@ -15,6 +18,7 @@ class SimulationTest
     void updatedActorApproachesTargetInVerticalLine()
     {
         // given
+        ApplicationContext applicationCtxMock = mock(ApplicationContext.class, withSettings().stubOnly());
         Junction target = ImmutableJunction.of("2", ImmutableCoords.of(0, 10), ImmutableSet.of());
         InternalActor actor = InternalActorBuilder.builder()
                 .withId(Optional.of("KR12345"))
@@ -26,7 +30,7 @@ class SimulationTest
         SimulationState simulationState = customSimulationState();
 
         // when
-        new Simulation().updateActor(actor, 1000L, simulationState);
+        new Simulation(applicationCtxMock).updateActor(actor, 1000L, simulationState);
 
         // then
         assertThat(actor).extracting(
@@ -40,10 +44,13 @@ class SimulationTest
         );
     }
 
+    // TODO add test for movement in "negative direction" (with decreasing x and y coords values)
+
     @Test
     void updatedActorApproachesTargetInSlantedLine()
     {
         // given
+        ApplicationContext applicationCtxMock = mock(ApplicationContext.class, withSettings().stubOnly());
         Junction target = ImmutableJunction.of("3", ImmutableCoords.of(10, 0), ImmutableSet.of());
         InternalActor actor = InternalActorBuilder.builder()
                 .withId(Optional.of("KR12345"))
@@ -55,7 +62,7 @@ class SimulationTest
         SimulationState simulationState = customSimulationState();
 
         // when
-        new Simulation().updateActor(actor, 1000L, simulationState);
+        new Simulation(applicationCtxMock).updateActor(actor, 1000L, simulationState);
 
         // then
         assertThat(actor).extracting(
@@ -74,6 +81,7 @@ class SimulationTest
     void updatedActorExceedsTargetAndTravelsTowardsNewOne()
     {
         // given
+        ApplicationContext applicationCtxMock = mock(ApplicationContext.class, withSettings().stubOnly());
         Junction target = ImmutableJunction.of("1", ImmutableCoords.of(0, 0), ImmutableSet.of());
         Junction newTarget = ImmutableJunction.of("2", ImmutableCoords.of(0, 10), ImmutableSet.of());
         InternalActor actor = InternalActorBuilder.builder()
@@ -86,7 +94,7 @@ class SimulationTest
         SimulationState simulationState = customSimulationState();
 
         // when
-        new Simulation().updateActor(actor, 1000L, simulationState);
+        new Simulation(applicationCtxMock).updateActor(actor, 1000L, simulationState);
 
         // then
         assertThat(actor).extracting(

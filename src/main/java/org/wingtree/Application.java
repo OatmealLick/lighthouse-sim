@@ -22,6 +22,6 @@ public class Application
 
         final Timer timer = new Timer(true);
         timer.scheduleAtFixedRate((Simulation)context.getBean("simulation"), 0, intervalInMillis);
-        Thread.sleep(60000);
+        Thread.sleep(120000);
     }
 }
