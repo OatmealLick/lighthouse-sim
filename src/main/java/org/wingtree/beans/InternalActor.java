@@ -91,7 +91,6 @@ public class InternalActor
                 ", velocityInMetersPerSec=" + velocityInMetersPerSec +
                 ", id=" + id +
                 ", currentCoords=" + currentCoords +
-                ", target=" + target +
                 '}';
     }
 }

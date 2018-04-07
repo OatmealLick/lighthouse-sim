@@ -21,24 +21,21 @@ public class Simulation extends TimerTask
     @Override
     public void run()
     {
-        final SimulationState simulationState =
-                (SimulationState) applicationContext.getAutowireCapableBeanFactory().getBean("simulation-state");
-        final long intervalInMillis =
-                (long) applicationContext.getAutowireCapableBeanFactory().getBean("interval-in-millis");
+        final SimulationState simulationState = applicationContext.getBean(SimulationState.class);
 
-        simulationState.getInternalActors().forEach(actor -> updateActor(actor, intervalInMillis, simulationState));
+        simulationState.getActors().forEach(actor -> updateActor(actor, simulationState));
         simulationState.getRoute().getJunctions().forEach(junction ->
                 junction.getTrackingDevices().forEach(trackingDevice ->
-                        trackingDevice.updateState(junction.getCoords(), simulationState.getInternalActors())));
+                        trackingDevice.updateState(junction.getCoords(), simulationState.getActors())));
 
+        simulationState.getActors().forEach(System.out::println);
         // FIXME this was actually causing the StackOverflowException ??
-        // simulationState.getInternalActors().forEach(System.out::println);
         // simulationState.getRoute().getJunctions().forEach(junction -> junction.getTrackingDevices().forEach(System.out::println));
     }
 
-    public void updateActor(final InternalActor actor, final long intervalInMillis, final SimulationState simulationState)
+    public void updateActor(final InternalActor actor, final SimulationState simulationState)
     {
-        final double distanceToCover = calculateDistanceToCover(actor, intervalInMillis);
+        final double distanceToCover = calculateDistanceToCover(actor, simulationState.getIntervalInMillis());
         final double distanceToTarget = calculateDistanceBetween(actor.getCurrentCoords(), actor.getTargetCoords());
 
         final double distance;

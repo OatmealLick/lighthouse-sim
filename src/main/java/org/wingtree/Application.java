@@ -2,6 +2,7 @@ package org.wingtree;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.wingtree.beans.SimulationState;
 import org.wingtree.simulation.Simulation;
@@ -13,15 +14,17 @@ public class Application
 {
     public static void main(String[] args) throws InterruptedException
     {
-        final ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
-        final SimulationState simulationState = SimulationState.dummy();
-        final long intervalInMillis = 500L;
+        final ApplicationContext context = SpringApplication.run(Application.class, args);
+        scheduleSimulation(context);
+    }
 
-        context.getBeanFactory().registerSingleton("simulation-state", simulationState);
-        context.getBeanFactory().registerSingleton("interval-in-millis", intervalInMillis);
-
+    private static void scheduleSimulation(ApplicationContext context) throws InterruptedException
+    {
         final Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate((Simulation)context.getBean("simulation"), 0, intervalInMillis);
-        Thread.sleep(120000);
+        Simulation simulation = context.getBean(Simulation.class);
+        long intervalInMillis = context.getBean(SimulationState.class).getIntervalInMillis();
+
+        timer.scheduleAtFixedRate(simulation, 0, intervalInMillis);
+        Thread.sleep(60000);
     }
 }

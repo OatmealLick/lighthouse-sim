@@ -30,7 +30,7 @@ class SimulationTest
         SimulationState simulationState = customSimulationState();
 
         // when
-        new Simulation(applicationCtxMock).updateActor(actor, 1000L, simulationState);
+        new Simulation(applicationCtxMock).updateActor(actor, simulationState);
 
         // then
         assertThat(actor).extracting(
@@ -62,7 +62,7 @@ class SimulationTest
         SimulationState simulationState = customSimulationState();
 
         // when
-        new Simulation(applicationCtxMock).updateActor(actor, 1000L, simulationState);
+        new Simulation(applicationCtxMock).updateActor(actor, simulationState);
 
         // then
         assertThat(actor).extracting(
@@ -94,7 +94,7 @@ class SimulationTest
         SimulationState simulationState = customSimulationState();
 
         // when
-        new Simulation(applicationCtxMock).updateActor(actor, 1000L, simulationState);
+        new Simulation(applicationCtxMock).updateActor(actor, simulationState);
 
         // then
         assertThat(actor).extracting(
@@ -115,16 +115,17 @@ class SimulationTest
         Junction two = ImmutableJunction.of("2", ImmutableCoords.of(0, 10), ImmutableSet.of());
         Junction three = ImmutableJunction.of("3", ImmutableCoords.of(10, 0), ImmutableSet.of());
 
-        return ImmutableSimulationState.builder()
-                .withInternalActors(ImmutableSet.of())
-                .withRoute(RouteBuilder.builder()
-                                   .withRoad(one, two)
-                                   .withRoad(two, three)
-                                   .withRoad(three, one)
-                                   .build())
-                .withCameras(ImmutableSet.of())
-                .withMovementSensors(ImmutableSet.of())
-                .withMovementAndDirectionSensors(ImmutableSet.of())
-                .build();
+        return SimulationStateBuilder.builder()
+                                     .withIntervalInMillis(1000L)
+                                     .withActors(ImmutableSet.of())
+                                     .withRoute(RouteBuilder.builder()
+                                                            .withRoad(one, two)
+                                                            .withRoad(two, three)
+                                                            .withRoad(three, one)
+                                                            .build())
+                                     .withCameras(ImmutableSet.of())
+                                     .withMovementSensors(ImmutableSet.of())
+                                     .withMovementAndDirectionSensors(ImmutableSet.of())
+                                     .build();
     }
 }

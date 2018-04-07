@@ -1,69 +1,74 @@
 package org.wingtree.beans;
 
-import com.google.common.collect.ImmutableSet;
-import org.immutables.value.Value;
-import org.wingtree.immutables.Immutable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.wingtree.repositories.SimulationStateRepository;
 
-import java.util.Optional;
 import java.util.Set;
 
-@Value.Immutable
-@Immutable
-public interface SimulationState
+@Component
+public class SimulationState
 {
-    Route getRoute();
+    private long intervalInMillis;
+    private Route route;
+    private Set<InternalActor> actors;
+    private Set<Camera> cameras;
+    private Set<MovementSensor> movementSensors;
+    private Set<MovementAndDirectionSensor> movementAndDirectionSensors;
 
-    Set<InternalActor> getInternalActors();
-
-    Set<Camera> getCameras();
-
-    Set<MovementSensor> getMovementSensors();
-
-    Set<MovementAndDirectionSensor> getMovementAndDirectionSensors();
-
-    static SimulationState dummy()
+    @Autowired
+    public SimulationState(final SimulationStateRepository simulationStateRepository)
     {
-        final Camera camera = CameraBuilder.builder()
-                .withLanternId("1")
-                .withRadius(0.7f)
-                .build();
-        final MovementSensor movementSensor = MovementSensorBuilder.builder()
-                .withLanternId("2")
-                .withRadius(2.5f)
-                .withSensingMovement(false)
-                .build();
-        final Junction one = ImmutableJunction.builder()
-                .withCoords(ImmutableCoords.of(0, 0))
-                .withId("1")
-                .withTrackingDevices(ImmutableSet.of(camera))
-                .build();
-        final Junction two = ImmutableJunction.builder()
-                .withCoords(ImmutableCoords.of(0, 10))
-                .withId("2")
-                .withTrackingDevices(ImmutableSet.of(movementSensor))
-                .build();
-        final Junction three = ImmutableJunction.builder()
-                .withCoords(ImmutableCoords.of(10, 0))
-                .withId("3")
-                .withTrackingDevices(ImmutableSet.of())
-                .build();
-        return ImmutableSimulationState.builder()
-                .withInternalActors(ImmutableSet.of(
-                        InternalActorBuilder.builder()
-                                .withId(Optional.of("KR01112"))
-                                .withCurrentCoords(ImmutableCoords.of(0, 0))
-                                .withTarget(two)
-                                .withType(ActorType.VEHICLE)
-                                .withVelocity(1)
-                                .build()))
-                .withRoute(RouteBuilder.builder()
-                                   .withRoad(one, two)
-                                   .withRoad(two, three)
-                                   .withRoad(three, one)
-                                   .build())
-                .withCameras(ImmutableSet.of(camera))
-                .withMovementSensors(ImmutableSet.of(movementSensor))
-                .withMovementAndDirectionSensors(ImmutableSet.of())
-                .build();
+        this.intervalInMillis = 500L; // FIXME read from some configuration file?
+        this.route = simulationStateRepository.getRoute();
+        this.actors = simulationStateRepository.getActors();
+        this.cameras = simulationStateRepository.getCameras();
+        this.movementSensors = simulationStateRepository.getMovementSensors();
+        this.movementAndDirectionSensors = simulationStateRepository.getMovementAndDirectionSensors();
+    }
+
+    SimulationState(long intervalInMillis,
+                    Route route,
+                    Set<InternalActor> actors,
+                    Set<Camera> cameras,
+                    Set<MovementSensor> movementSensors,
+                    Set<MovementAndDirectionSensor> movementAndDirectionSensors)
+    {
+        this.intervalInMillis = intervalInMillis;
+        this.route = route;
+        this.actors = actors;
+        this.cameras = cameras;
+        this.movementSensors = movementSensors;
+        this.movementAndDirectionSensors = movementAndDirectionSensors;
+    }
+
+    public long getIntervalInMillis()
+    {
+        return intervalInMillis;
+    }
+
+    public Route getRoute()
+    {
+        return route;
+    }
+
+    public Set<InternalActor> getActors()
+    {
+        return actors;
+    }
+
+    public Set<Camera> getCameras()
+    {
+        return cameras;
+    }
+
+    public Set<MovementSensor> getMovementSensors()
+    {
+        return movementSensors;
+    }
+
+    public Set<MovementAndDirectionSensor> getMovementAndDirectionSensors()
+    {
+        return movementAndDirectionSensors;
     }
 }

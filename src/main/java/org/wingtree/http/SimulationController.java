@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.wingtree.beans.Junction;
 import org.wingtree.beans.SimulationState;
 
-@RestController("simulation.controller")
+@RestController
 public class SimulationController
 {
     private ApplicationContext applicationContext;
@@ -19,11 +19,10 @@ public class SimulationController
         this.applicationContext = applicationContext;
     }
 
-    @RequestMapping("/lantern/{lanternId}")
+    @RequestMapping("/lanterns/{lanternId}")
     public Junction getLantern(@PathVariable final String lanternId)
     {
-        final SimulationState simulationState = (SimulationState) applicationContext.getAutowireCapableBeanFactory()
-                .getBean("simulation-state");
+        final SimulationState simulationState = applicationContext.getBean(SimulationState.class);
         return simulationState.getRoute().getJunctionOfId(lanternId);
     }
 }
