@@ -7,10 +7,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class InternalActorBuilder
 {
     private ActorType type;
-    private float velocity;
+    private double velocity;
     private Optional<String> id;
     private Coords currentCoords;
-    private Coords targetCoords;
+    private Junction target;
 
     private InternalActorBuilder()
     {
@@ -27,7 +27,7 @@ public class InternalActorBuilder
         return this;
     }
 
-    public InternalActorBuilder withVelocity(final float velocity)
+    public InternalActorBuilder withVelocity(final double velocity)
     {
         this.velocity = velocity;
         return this;
@@ -45,19 +45,19 @@ public class InternalActorBuilder
         return this;
     }
 
-    public InternalActorBuilder withTargetCoords(final Coords targetCoords)
+    public InternalActorBuilder withTarget(final Junction target)
     {
-        this.targetCoords = targetCoords;
+        this.target = target;
         return this;
     }
 
     public InternalActor build()
     {
         checkNotNull(currentCoords);
-        checkNotNull(targetCoords);
+        checkNotNull(target);
         if(id == null) {
             id = Optional.empty();
         }
-        return new InternalActor(type, velocity, id, currentCoords, targetCoords);
+        return new InternalActor(type, velocity, id, currentCoords, target);
     }
 }

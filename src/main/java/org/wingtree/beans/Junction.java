@@ -3,11 +3,15 @@ package org.wingtree.beans;
 import org.immutables.value.Value;
 import org.wingtree.immutables.Immutable;
 
+import java.util.Set;
+
 @Value.Immutable
 @Immutable
-public interface Coords
+public interface Junction
 {
-    double getX();
+    String getId();
 
-    double getY();
+    Coords getCoords();
+
+    Set<TrackingDevice> getTrackingDevices();
 }

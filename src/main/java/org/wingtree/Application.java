@@ -1,25 +1,30 @@
 package org.wingtree;
 
-import org.quartz.SchedulerException;
-import org.wingtree.beans.StartupParameters;
-import org.wingtree.http.HttpServer;
-import org.wingtree.simulation.SimulationManager;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.wingtree.beans.SimulationState;
+import org.wingtree.simulation.Simulation;
 
+import java.util.Timer;
+
+@SpringBootApplication
 public class Application
 {
-    public void run(final String[] args)
+    public static void main(String[] args) throws InterruptedException
     {
-        new Thread(() -> new HttpServer().run(args)).start();
-
-        try {
-            new SimulationManager(StartupParameters.dummy(), 500).run();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        final ApplicationContext context = SpringApplication.run(Application.class, args);
+        scheduleSimulation(context);
     }
 
-    public static void main(String[] args)
+    private static void scheduleSimulation(ApplicationContext context) throws InterruptedException
     {
-        new Application().run(args);
+        final Timer timer = new Timer(true);
+        Simulation simulation = context.getBean(Simulation.class);
+        long intervalInMillis = context.getBean(SimulationState.class).getIntervalInMillis();
+
+        timer.scheduleAtFixedRate(simulation, 0, intervalInMillis);
+        Thread.sleep(60000);
     }
 }
