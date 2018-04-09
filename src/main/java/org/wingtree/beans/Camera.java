@@ -8,20 +8,13 @@ import java.util.stream.Collectors;
 
 public class Camera implements TrackingDevice
 {
-    private final String lanternId;
     private Set<InternalActor> actorsInView;
     private final double radius;
 
-    Camera(final String lanternId, final Set<InternalActor> actorsInView, final double radius)
+    Camera(final Set<InternalActor> actorsInView, final double radius)
     {
-        this.lanternId = lanternId;
         this.actorsInView = actorsInView;
         this.radius = radius;
-    }
-
-    public String getLanternId()
-    {
-        return lanternId;
     }
 
     public Set<InternalActor> getActorsInView()
@@ -54,23 +47,19 @@ public class Camera implements TrackingDevice
         if (o == null || getClass() != o.getClass()) return false;
         final Camera camera = (Camera) o;
         return Double.compare(camera.radius, radius) == 0 &&
-                Objects.equals(lanternId, camera.lanternId) &&
                 Objects.equals(actorsInView, camera.actorsInView);
     }
 
     @Override
     public int hashCode()
     {
-
-        return Objects.hash(lanternId, actorsInView, radius);
+        return Objects.hash(actorsInView, radius);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Camera{" +
-                "lanternId='" + lanternId + '\'' +
-                ", actorsInView=" + actorsInView +
+                "actorsInView=" + actorsInView +
                 ", radius=" + radius +
                 '}';
     }

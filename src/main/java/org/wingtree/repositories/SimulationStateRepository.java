@@ -8,7 +8,8 @@ public interface SimulationStateRepository
 {
     Route getRoute();
     Set<InternalActor> getActors();
-    Set<Camera> getCameras();
-    Set<MovementSensor> getMovementSensors();
-    Set<MovementAndDirectionSensor> getMovementAndDirectionSensors();
+    // todo as of April 9th discussion, removing this. Leaving temporary comment for now
+//    Set<Camera> getCameras();
+//    Set<MovementSensor> getMovementSensors();
+//    Set<MovementAndDirectionSensor> getMovementAndDirectionSensors();
 }

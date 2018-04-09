@@ -1,18 +1,18 @@
 package org.wingtree.simulation;
 
 import com.google.common.collect.ImmutableSet;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.wingtree.beans.*;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.withSettings;
 
-class SimulationTest
+public class SimulationTest
 {
     @Test
     void updatedActorApproachesTargetInVerticalLine()

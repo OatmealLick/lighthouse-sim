@@ -7,20 +7,13 @@ import java.util.Set;
 
 public class MovementSensor implements TrackingDevice
 {
-    private String lanternId;
     private boolean sensingMovement;
     private double radius;
 
-    MovementSensor(final String lanternId, final boolean sensingMovement, final double radius)
+    MovementSensor(final boolean sensingMovement, final double radius)
     {
-        this.lanternId = lanternId;
         this.sensingMovement = sensingMovement;
         this.radius = radius;
-    }
-
-    public String getLanternId()
-    {
-        return lanternId;
     }
 
     public boolean isSensingMovement()
@@ -52,23 +45,20 @@ public class MovementSensor implements TrackingDevice
         if (o == null || getClass() != o.getClass()) return false;
         final MovementSensor that = (MovementSensor) o;
         return sensingMovement == that.sensingMovement &&
-                Double.compare(that.radius, radius) == 0 &&
-                Objects.equals(lanternId, that.lanternId);
+                Double.compare(that.radius, radius) == 0;
     }
 
     @Override
     public int hashCode()
     {
 
-        return Objects.hash(lanternId, sensingMovement, radius);
+        return Objects.hash(sensingMovement, radius);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "MovementSensor{" +
-                "lanternId='" + lanternId + '\'' +
-                ", sensingMovement=" + sensingMovement +
+                "sensingMovement=" + sensingMovement +
                 ", radius=" + radius +
                 '}';
     }
