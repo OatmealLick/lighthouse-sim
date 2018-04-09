@@ -3,19 +3,17 @@ package org.wingtree.repositories;
 import com.google.common.collect.ImmutableSet;
 import org.jooq.lambda.Seq;
 import org.neo4j.graphdb.*;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.traversal.Evaluation;
-import org.neo4j.graphdb.traversal.Evaluator;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.graphdb.traversal.Traverser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.wingtree.beans.*;
-import org.wingtree.beans.Direction;
 import org.wingtree.database.GraphDatabaseServiceProvider;
 
-import java.io.File;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,11 +51,24 @@ public class GraphDbRepository implements SimulationStateRepository {
                     .findFirst()
                     .orElseThrow(IllegalStateException::new);
             transaction.success();
-            final RouteBuilder builder = RouteBuilder.builder();
-            for (final Path path : getLanternsTraverser(node)) {
-                builder.withRoad(toJunction(path.startNode()), toJunction(path.endNode()));
+            final Set<RouteSegment> routeSegments = new HashSet<>();
+            buildPathsFromNodeRecursively(node, routeSegments);
+            return RouteBuilder.builder()
+                    .addRouteSegments(routeSegments)
+                    .build();
+        }
+    }
+
+    private void buildPathsFromNodeRecursively(final Node node, final Set<RouteSegment> routeSegments) {
+        for (final Path path : getLanternsTraverser(node)) {
+            final RouteSegment routeSegment = ImmutableRouteSegment.builder()
+                    .withFrom(toJunction(path.startNode()))
+                    .withTo(toJunction(path.endNode()))
+                    .build();
+            if(!routeSegments.contains(routeSegment)) {
+                routeSegments.add(routeSegment);
+                buildPathsFromNodeRecursively(path.endNode(), routeSegments);
             }
-            return builder.build();
         }
     }
 
@@ -65,9 +76,9 @@ public class GraphDbRepository implements SimulationStateRepository {
         final TraversalDescription description = graphService.traversalDescription()
                 .breadthFirst()
                 .evaluator(path -> {
-                    if (path.length() < 2) {
+                    if (path.length() < 1) {
                         return Evaluation.EXCLUDE_AND_CONTINUE;
-                    } else if (path.length() > 2) {
+                    } else if (path.length() > 1) {
                         return Evaluation.EXCLUDE_AND_PRUNE;
                     } else {
                         return Evaluation.INCLUDE_AND_CONTINUE;
@@ -112,17 +123,21 @@ public class GraphDbRepository implements SimulationStateRepository {
 
     @Override
     public Set<InternalActor> getActors() {
-        //todo this might not always be the same junction :^)
-        final Junction junction = toJunction(graphService.getAllNodes()
-                .stream()
-                .findFirst()
-                .orElseThrow(IllegalStateException::new));
-        return ImmutableSet.of(InternalActorBuilder.builder()
-                .withId(Optional.of("KR01112"))
-                .withCurrentCoords(ImmutableCoords.of(0, 0))
-                .withTarget(junction)
-                .withType(ActorType.VEHICLE)
-                .withVelocity(1)
-                .build());
+        try(final Transaction transaction = graphService.beginTx())
+        {
+            final Junction junction = toJunction(graphService.getAllNodes()
+                    .stream()
+                    .filter(node -> node.getProperty(ID).equals("2"))
+                    .findFirst()
+                    .orElseThrow(IllegalStateException::new));
+            transaction.success();
+            return ImmutableSet.of(InternalActorBuilder.builder()
+                    .withId(Optional.of("KR01112"))
+                    .withCurrentCoords(ImmutableCoords.of(0, 0))
+                    .withTarget(junction)
+                    .withType(ActorType.VEHICLE)
+                    .withVelocity(1)
+                    .build());
+        }
     }
 }

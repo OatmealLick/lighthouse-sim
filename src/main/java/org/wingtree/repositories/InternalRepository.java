@@ -1,14 +1,17 @@
 package org.wingtree.repositories;
 
 import com.google.common.collect.ImmutableSet;
-import org.neo4j.graphdb.traversal.TraversalDescription;
-import org.neo4j.graphdb.traversal.Traverser;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jooq.lambda.Seq;
+import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.wingtree.beans.*;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 @Profile("development")
@@ -38,11 +41,10 @@ public class InternalRepository implements SimulationStateRepository {
 
     @Override
     public Route getRoute() {
-        return RouteBuilder.builder()
-                .withRoad(one, two)
-                .withRoad(two, three)
-                .withRoad(three, one)
-                .build();
+        final RouteBuilder builder = RouteBuilder.builder();
+        Stream.of(Pair.of(one, two), Pair.of(two, three), Pair.of(three, one))
+                .forEach(pair -> builder.addRouteSegment(pair.getLeft(), pair.getRight()));
+        return builder.build();
     }
 
     @Override

@@ -51,7 +51,6 @@ public class MovementSensor implements TrackingDevice
     @Override
     public int hashCode()
     {
-
         return Objects.hash(sensingMovement, radius);
     }
 
