@@ -52,7 +52,6 @@ public class InternalRepository implements SimulationStateRepository {
         return ImmutableSet.of(InternalActorBuilder.builder()
                 .withId(Optional.of("KR01112"))
                 .withCurrentCoords(ImmutableCoords.of(0, 0))
-                //todo this will always be the same target?
                 .withTarget(two)
                 .withType(ActorType.VEHICLE)
                 .withVelocity(1)
