@@ -50,6 +50,8 @@ public class Simulation extends TimerTask
         final double degrees = calculateDegrees(actor);
         final double newX = roundToTwoDecimalPlaces(actor.getCurrentCoords().getX() + distance * Math.cos(degrees));
         final double newY = roundToTwoDecimalPlaces(actor.getCurrentCoords().getY() + distance * Math.sin(degrees));
+
+        actor.setPreviousCoords(ImmutableCoords.of(actor.getCurrentCoords().getX(), actor.getCurrentCoords().getY()));
         actor.setCurrentCoords(ImmutableCoords.of(newX, newY));
     }
 

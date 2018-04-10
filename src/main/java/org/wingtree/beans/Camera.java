@@ -34,6 +34,7 @@ public class Camera extends VelocityAndDirectionSensor
     @Override
     public void updateState(final Set<InternalActor> actors)
     {
+        actorsInView.clear();
         actors.stream()
               .filter(this::isMeasurementAcceptable)
               .forEach(actor -> actorsInView.put(actor, createReadingFor(actor)));

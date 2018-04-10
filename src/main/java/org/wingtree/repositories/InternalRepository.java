@@ -14,7 +14,7 @@ public class InternalRepository implements SimulationStateRepository
 {
     final private Camera camera = CameraBuilder.builder()
                                                .withCoords(ImmutableCoords.of(0, 0))
-                                               .withRadius(0.7f)
+                                               .withRadius(5f)
                                                .build();
     final private MovementSensor movementSensor = MovementSensorBuilder.builder()
                                                                        .withCoords(ImmutableCoords.of(0, 10))

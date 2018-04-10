@@ -35,8 +35,11 @@ public class Algebra
     public static double getRelativeAngle(Vector2D vector1, Vector2D vector2)
     {
         // FIXME check angle calculation
-        double angle = Math.abs(Vector2D.angle(vector1, vector2));
-        if (angle > Math.PI) return angle - Math.PI;
-        else return angle;
+        if (vector1.getNorm() == 0 || vector2.getNorm() == 0) return 0;
+        else {
+            double angle = Math.abs(Vector2D.angle(vector1, vector2));
+            if (angle > Math.PI) return angle - Math.PI;
+            else return angle;
+        }
     }
 }

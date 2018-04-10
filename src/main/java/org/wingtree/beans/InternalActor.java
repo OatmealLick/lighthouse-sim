@@ -67,6 +67,11 @@ public class InternalActor
         this.currentCoords = currentCoords;
     }
 
+    public void setPreviousCoords(Coords coords)
+    {
+        this.previousCoords = coords;
+    }
+
     public void setTarget(final Junction target)
     {
         this.target = target;
@@ -102,7 +107,6 @@ public class InternalActor
                 ", id=" + id +
                 ", currentCoords=" + currentCoords +
                 ", previousCoords=" + previousCoords +
-                ", target=" + target +
                 '}';
     }
 }
