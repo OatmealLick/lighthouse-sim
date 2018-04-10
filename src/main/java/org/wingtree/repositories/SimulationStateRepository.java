@@ -10,5 +10,5 @@ public interface SimulationStateRepository
     Set<InternalActor> getActors();
     Set<Camera> getCameras();
     Set<MovementSensor> getMovementSensors();
-    Set<MovementAndDirectionSensor> getMovementAndDirectionSensors();
+    Set<VelocityAndDirectionSensor> getMovementAndDirectionSensors();
 }

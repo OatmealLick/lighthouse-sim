@@ -9,28 +9,21 @@ import static com.google.common.base.Preconditions.checkState;
 
 public class CameraBuilder
 {
-    private String lanternId;
-    private Set<InternalActor> actorsInView = Sets.newHashSet();
+    private Coords coords;
     private double radius;
+
+    private CameraBuilder()
+    {
+    }
 
     public static CameraBuilder builder()
     {
         return new CameraBuilder();
     }
-    
-    private CameraBuilder()
-    {
-    }
 
-    public CameraBuilder withLanternId(final String lanternId)
+    public CameraBuilder withCoords(final Coords coords)
     {
-        this.lanternId = lanternId;
-        return this;
-    }
-
-    public CameraBuilder withActorsInView(final Set<InternalActor> actorsInView)
-    {
-        this.actorsInView = actorsInView;
+        this.coords = coords;
         return this;
     }
 
@@ -42,8 +35,8 @@ public class CameraBuilder
 
     public Camera build()
     {
-        checkNotNull(lanternId);
+        checkNotNull(coords);
         checkState(radius > 0);
-        return new Camera(lanternId, actorsInView, radius);
+        return new Camera(coords, radius);
     }
 }

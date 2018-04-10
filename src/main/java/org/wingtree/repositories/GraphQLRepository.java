@@ -37,7 +37,7 @@ public class GraphQLRepository implements SimulationStateRepository
     }
 
     @Override
-    public Set<MovementAndDirectionSensor> getMovementAndDirectionSensors()
+    public Set<VelocityAndDirectionSensor> getMovementAndDirectionSensors()
     {
         return null;
     }

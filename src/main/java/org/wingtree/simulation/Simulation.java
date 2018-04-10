@@ -26,7 +26,7 @@ public class Simulation extends TimerTask
         simulationState.getActors().forEach(actor -> updateActor(actor, simulationState));
         simulationState.getRoute().getJunctions().forEach(junction ->
                 junction.getTrackingDevices().forEach(trackingDevice ->
-                        trackingDevice.updateState(junction.getCoords(), simulationState.getActors())));
+                        trackingDevice.updateState(simulationState.getActors())));
 
         simulationState.getActors().forEach(System.out::println);
         // FIXME this was actually causing the StackOverflowException ??

@@ -2,36 +2,23 @@ package org.wingtree.beans;
 
 import org.wingtree.util.Algebra;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class Camera implements TrackingDevice
+public class Camera extends VelocityAndDirectionSensor
 {
-    private final String lanternId;
-    private Set<InternalActor> actorsInView;
-    private final double radius;
+    private Map<InternalActor, VelocityAndDirectionSensorReading> actorsInView;
 
-    Camera(final String lanternId, final Set<InternalActor> actorsInView, final double radius)
+    Camera(final Coords coords, final double radius)
     {
-        this.lanternId = lanternId;
-        this.actorsInView = actorsInView;
-        this.radius = radius;
+        super(coords, radius);
+        actorsInView = new HashMap<>();
     }
 
-    public String getLanternId()
+    @Override
+    public Coords getCoords()
     {
-        return lanternId;
-    }
-
-    public Set<InternalActor> getActorsInView()
-    {
-        return actorsInView;
-    }
-
-    public void setActorsInView(final Set<InternalActor> actorsInView)
-    {
-        this.actorsInView = actorsInView;
+        return coords;
     }
 
     public double getRadius()
@@ -39,22 +26,28 @@ public class Camera implements TrackingDevice
         return radius;
     }
 
-    @Override
-    public void updateState(final Coords trackingDeviceCoords, final Set<InternalActor> actors)
+    public Map<InternalActor, VelocityAndDirectionSensorReading> getActorsInView()
     {
-        actorsInView = actors.stream()
-                .filter(actor -> Algebra.isTargetInRadius(trackingDeviceCoords, radius, actor.getCurrentCoords()))
-                .collect(Collectors.toSet());
+        return actorsInView;
     }
 
     @Override
-    public boolean equals(final Object o)
+    public void updateState(final Set<InternalActor> actors)
+    {
+        actors.stream()
+              .filter(this::isMeasurementAcceptable)
+              .forEach(actor -> actorsInView.put(actor, createReadingFor(actor)));
+
+    }
+
+    @Override
+    public boolean equals(Object o)
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final Camera camera = (Camera) o;
+        Camera camera = (Camera) o;
         return Double.compare(camera.radius, radius) == 0 &&
-                Objects.equals(lanternId, camera.lanternId) &&
+                Objects.equals(coords, camera.coords) &&
                 Objects.equals(actorsInView, camera.actorsInView);
     }
 
@@ -62,16 +55,16 @@ public class Camera implements TrackingDevice
     public int hashCode()
     {
 
-        return Objects.hash(lanternId, actorsInView, radius);
+        return Objects.hash(coords, radius, actorsInView);
     }
 
     @Override
     public String toString()
     {
         return "Camera{" +
-                "lanternId='" + lanternId + '\'' +
-                ", actorsInView=" + actorsInView +
+                "coords=" + coords +
                 ", radius=" + radius +
+                ", actorsInView=" + actorsInView +
                 '}';
     }
 }

@@ -5,7 +5,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 public class MovementSensorBuilder
 {
-    private String lanternId;
+    private Coords coords;
     private boolean sensingMovement;
     private double radius;
 
@@ -18,9 +18,9 @@ public class MovementSensorBuilder
     {
     }
 
-    public MovementSensorBuilder withLanternId(final String lanternId)
+    public MovementSensorBuilder withCoords(final Coords coords)
     {
-        this.lanternId = lanternId;
+        this.coords = coords;
         return this;
     }
 
@@ -38,8 +38,8 @@ public class MovementSensorBuilder
 
     public MovementSensor build()
     {
-        checkNotNull(lanternId);
+        checkNotNull(coords);
         checkState(radius > 0);
-        return new MovementSensor(lanternId, sensingMovement, radius);
+        return new MovementSensor(coords, radius, sensingMovement);
     }
 }

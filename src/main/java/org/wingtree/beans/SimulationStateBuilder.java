@@ -12,7 +12,7 @@ public class SimulationStateBuilder
     private Set<InternalActor> actors;
     private Set<Camera> cameras;
     private Set<MovementSensor> movementSensors;
-    private Set<MovementAndDirectionSensor> movementAndDirectionSensors;
+    private Set<VelocityAndDirectionSensor> velocityAndDirectionSensors;
 
     private SimulationStateBuilder()
     {
@@ -53,10 +53,10 @@ public class SimulationStateBuilder
         return this;
     }
 
-    public SimulationStateBuilder withMovementAndDirectionSensors(final Set<MovementAndDirectionSensor>
-                                                                          movementAndDirectionSensors)
+    public SimulationStateBuilder withMovementAndDirectionSensors(final Set<VelocityAndDirectionSensor>
+                                                                          velocityAndDirectionSensors)
     {
-        this.movementAndDirectionSensors = movementAndDirectionSensors;
+        this.velocityAndDirectionSensors = velocityAndDirectionSensors;
         return this;
     }
 
@@ -67,13 +67,13 @@ public class SimulationStateBuilder
         checkNotNull(actors);
         checkNotNull(cameras);
         checkNotNull(movementSensors);
-        checkNotNull(movementAndDirectionSensors);
+        checkNotNull(velocityAndDirectionSensors);
 
         return new SimulationState(intervalInMillis,
                                    route,
                                    actors,
                                    cameras,
                                    movementSensors,
-                                   movementAndDirectionSensors);
+                                   velocityAndDirectionSensors);
     }
 }

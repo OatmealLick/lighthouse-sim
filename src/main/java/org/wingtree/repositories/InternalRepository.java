@@ -13,11 +13,11 @@ import java.util.Set;
 public class InternalRepository implements SimulationStateRepository
 {
     final private Camera camera = CameraBuilder.builder()
-                                               .withLanternId("1")
+                                               .withCoords(ImmutableCoords.of(0, 0))
                                                .withRadius(0.7f)
                                                .build();
     final private MovementSensor movementSensor = MovementSensorBuilder.builder()
-                                                                       .withLanternId("2")
+                                                                       .withCoords(ImmutableCoords.of(0, 10))
                                                                        .withRadius(2.5f)
                                                                        .withSensingMovement(false)
                                                                        .build();
@@ -50,6 +50,7 @@ public class InternalRepository implements SimulationStateRepository
         return ImmutableSet.of(InternalActorBuilder.builder()
                                                    .withId(Optional.of("KR01112"))
                                                    .withCurrentCoords(ImmutableCoords.of(0, 0))
+                                                   .withPreviousCoords(ImmutableCoords.of(0, 0))
                                                    .withTarget(two)
                                                    .withType(ActorType.VEHICLE)
                                                    .withVelocity(1)
@@ -69,7 +70,7 @@ public class InternalRepository implements SimulationStateRepository
     }
 
     @Override
-    public Set<MovementAndDirectionSensor> getMovementAndDirectionSensors()
+    public Set<VelocityAndDirectionSensor> getMovementAndDirectionSensors()
     {
         return ImmutableSet.of();
     }
