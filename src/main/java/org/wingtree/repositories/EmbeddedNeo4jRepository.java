@@ -10,9 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.wingtree.beans.*;
-import org.wingtree.database.GraphDatabaseServiceProvider;
+import org.wingtree.database.EmbeddedNeo4jDriverProvider;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -21,8 +20,8 @@ import java.util.stream.Collectors;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @Component
-@Profile({"embedded-neo4j", "production"})
-public class GraphDbRepository implements SimulationStateRepository {
+@Profile({"embedded-neo4j"})
+public class EmbeddedNeo4jRepository implements SimulationStateRepository {
     private static final String ID = "id";
     private static final String X = "x";
     private static final String Y = "y";
@@ -37,7 +36,7 @@ public class GraphDbRepository implements SimulationStateRepository {
     private final GraphDatabaseService graphService;
 
     @Autowired
-    public GraphDbRepository(final GraphDatabaseServiceProvider databaseServiceProvider) {
+    public EmbeddedNeo4jRepository(final EmbeddedNeo4jDriverProvider databaseServiceProvider) {
         graphService = databaseServiceProvider.get();
     }
 

@@ -7,5 +7,6 @@ import java.util.Set;
 public interface SimulationStateRepository
 {
     Route getRoute();
+
     Set<InternalActor> getActors();
 }

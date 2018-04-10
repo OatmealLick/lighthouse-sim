@@ -4,7 +4,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface GraphDatabaseServiceProvider {
-
+public interface EmbeddedNeo4jDriverProvider
+{
     GraphDatabaseService get();
 }

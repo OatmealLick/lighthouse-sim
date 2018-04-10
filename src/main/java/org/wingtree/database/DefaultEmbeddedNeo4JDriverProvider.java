@@ -3,23 +3,20 @@ package org.wingtree.database;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.EnvironmentAware;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @Component
 @Profile("embedded-neo4j")
 @EnableConfigurationProperties
-public class EmbeddedGraphDatabaseServiceProvider implements GraphDatabaseServiceProvider {
+public class DefaultEmbeddedNeo4JDriverProvider implements EmbeddedNeo4jDriverProvider
+{
 
     //todo move to properties
     private static final String ID = "id";
@@ -36,7 +33,7 @@ public class EmbeddedGraphDatabaseServiceProvider implements GraphDatabaseServic
     private final GraphDatabaseService graphService;
 
     @Autowired
-    public EmbeddedGraphDatabaseServiceProvider(final Environment environment)
+    public DefaultEmbeddedNeo4JDriverProvider(final Environment environment)
     {
         final File databaseFile = new File(checkNotNull((environment.getProperty("neo4j.path"))));
         graphService = new GraphDatabaseFactory().newEmbeddedDatabase(databaseFile);
