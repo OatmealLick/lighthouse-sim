@@ -10,20 +10,7 @@ import org.neo4j.driver.v1.types.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.wingtree.beans.ActorType;
-import org.wingtree.beans.Camera;
-import org.wingtree.beans.CameraBuilder;
-import org.wingtree.beans.ImmutableCoords;
-import org.wingtree.beans.ImmutableJunction;
-import org.wingtree.beans.ImmutableRouteSegment;
-import org.wingtree.beans.InternalActor;
-import org.wingtree.beans.InternalActorBuilder;
-import org.wingtree.beans.MovementSensor;
-import org.wingtree.beans.MovementSensorBuilder;
-import org.wingtree.beans.Route;
-import org.wingtree.beans.RouteBuilder;
-import org.wingtree.beans.RouteSegment;
-import org.wingtree.beans.TrackingDevice;
+import org.wingtree.beans.*;
 import org.wingtree.database.StandaloneNeo4jDriverProvider;
 
 import java.util.Optional;
@@ -37,7 +24,6 @@ public class StandaloneNeo4jRepository implements SimulationStateRepository
     private static final String X = "x";
     private static final String Y = "y";
     private static final String RADIUS = "radius";
-    private static final String SENSING_MOVEMENT = "sensing_movement";
     private static final String HAS = ":HAS";
     private static final String CONNECTED_TO = ":CONNECTED_TO";
 
@@ -57,14 +43,14 @@ public class StandaloneNeo4jRepository implements SimulationStateRepository
             final StatementResult statementResult = session.run("MATCH (n:lantern) RETURN n");
             while (statementResult.hasNext()) {
                 final Node lantern = extractSingleNode(statementResult.next());
-                final ImmutableJunction from = toJunction(session, lantern);
+                final Junction from = toJunction(session, lantern);
                 final StatementResult connectedToResults = session.run(String.format(
                         "MATCH (:lantern{id:\"%s\"})-[%s]->(x) RETURN x",
                         lantern.get(ID).asString(),
                         CONNECTED_TO));
                 while (connectedToResults.hasNext()) {
                     final Node connectedLantern = extractSingleNode(connectedToResults.next());
-                    final ImmutableJunction to = toJunction(session, connectedLantern);
+                    final Junction to = toJunction(session, connectedLantern);
                     routeSegments.add(ImmutableRouteSegment.builder()
                             .withFrom(from)
                             .withTo(to)
@@ -77,46 +63,64 @@ public class StandaloneNeo4jRepository implements SimulationStateRepository
                 .build();
     }
 
-    private Set<TrackingDevice> getTrackingDevices(final String lanternId, final Session session)
+    private Set<TrackingDevice> getTrackingDevices(final String lanternId,
+                                                   final Coords lanternCoords,
+                                                   final Session session)
     {
         final ImmutableSet.Builder<TrackingDevice> trackingDevicesBuilder = new ImmutableSet.Builder<>();
+
         final StatementResult cameraResults =
                 session.run(String.format("MATCH (:lantern{id:\"%s\"})-[%s]->(cam:camera) RETURN cam;",
                         lanternId, HAS));
         while (cameraResults.hasNext()) {
-            trackingDevicesBuilder.add(toCamera(extractSingleNode(cameraResults.next())));
+            trackingDevicesBuilder.add(toCamera(extractSingleNode(cameraResults.next()), lanternCoords));
         }
+
         final StatementResult msResults = session.run(String.format(
                 "MATCH (:lantern{id:\"%s\"})-[%s]->(ms:movement_sensor) RETURN ms;", lanternId, HAS));
         while (msResults.hasNext()) {
-            trackingDevicesBuilder.add(toMovementSensor(extractSingleNode(msResults.next())));
+            trackingDevicesBuilder.add(toMovementSensor(extractSingleNode(msResults.next()), lanternCoords));
         }
-        //todo add third type
+
+        final StatementResult vdsResults = session.run(String.format(
+                "MATCH (:lantern{id:\"%s\"})-[%s]->(vds:velocity_and_direction_sensor) RETURN vds;", lanternId, HAS));
+        while (vdsResults.hasNext()) {
+            trackingDevicesBuilder.add(toVelocityAndDirectionSensor(extractSingleNode(vdsResults.next()), lanternCoords));
+        }
         return trackingDevicesBuilder.build();
     }
 
-    private Camera toCamera(final Node node)
+    private Camera toCamera(final Node node, final Coords lanternCoords)
     {
         return CameraBuilder.builder()
-                .withRadius(node.get(RADIUS).asDouble())
-                .withActorsInView(Sets.newHashSet())
-                .build();
+                            .withCoords(lanternCoords)
+                            .withRadius(node.get(RADIUS).asDouble())
+                            .build();
     }
 
-    private MovementSensor toMovementSensor(final Node node)
+    private MovementSensor toMovementSensor(final Node node, final Coords lanternCoords)
     {
         return MovementSensorBuilder.builder()
-                .withRadius(node.get(RADIUS).asDouble())
-                .withSensingMovement(node.get(SENSING_MOVEMENT).asBoolean())
-                .build();
+                                    .withCoords(lanternCoords)
+                                    .withRadius(node.get(RADIUS).asDouble())
+                                    .build();
     }
 
-    private ImmutableJunction toJunction(final Session session, final Node lantern)
+    private VelocityAndDirectionSensor toVelocityAndDirectionSensor(final Node node, final Coords lanternCoords)
     {
+        return VelocityAndDirectionSensorBuilder.builder()
+                                                .withCoords(lanternCoords)
+                                                .withRadius(node.get(RADIUS).asDouble())
+                                                .build();
+    }
+
+    private Junction toJunction(final Session session, final Node lantern)
+    {
+        Coords coords = ImmutableCoords.of(lantern.get(X).asDouble(), lantern.get(Y).asDouble());
         return ImmutableJunction.builder()
                 .withId(lantern.get(ID).asString())
-                .withCoords(ImmutableCoords.of(lantern.get(X).asDouble(), lantern.get(Y).asDouble()))
-                .withTrackingDevices(getTrackingDevices(lantern.get(ID).asString(), session))
+                .withCoords(coords)
+                .withTrackingDevices(getTrackingDevices(lantern.get(ID).asString(), coords, session))
                 .build();
     }
 
@@ -132,8 +136,9 @@ public class StandaloneNeo4jRepository implements SimulationStateRepository
             final Node lantern = extractSingleNode(session.run("MATCH (n:lantern) RETURN n").next());
             return ImmutableSet.of(InternalActorBuilder.builder()
                     .withId(Optional.of("KR01112"))
-                    .withCurrentCoords(ImmutableCoords.of(0, 0))
-                    .withTarget(toJunction(session, lantern))
+                    .withPreviousCoords(ImmutableCoords.of(0, 0))
+                    .withCurrentCoords(ImmutableCoords.of(0, 0)) // FIXME should be configurable
+                    .withTarget(toJunction(session, lantern)) // FIXME based on current coords
                     .withType(ActorType.VEHICLE)
                     .withVelocity(1)
                     .build());

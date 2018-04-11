@@ -123,9 +123,6 @@ public class SimulationTest
                                                             .addRouteSegment(two, three)
                                                             .addRouteSegment(three, one)
                                                             .build())
-                                     .withCameras(ImmutableSet.of())
-                                     .withMovementSensors(ImmutableSet.of())
-                                     .withMovementAndDirectionSensors(ImmutableSet.of())
                                      .build();
     }
 }

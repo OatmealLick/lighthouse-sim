@@ -12,9 +12,6 @@ public class SimulationState
     private long intervalInMillis;
     private Route route;
     private Set<InternalActor> actors;
-    private Set<Camera> cameras;
-    private Set<MovementSensor> movementSensors;
-    private Set<VelocityAndDirectionSensor> velocityAndDirectionSensors;
 
     @Autowired
     public SimulationState(final SimulationStateRepository simulationStateRepository)
@@ -22,24 +19,15 @@ public class SimulationState
         this.intervalInMillis = 500L; // FIXME read from some configuration file?
         this.route = simulationStateRepository.getRoute();
         this.actors = simulationStateRepository.getActors();
-        this.cameras = simulationStateRepository.getCameras();
-        this.movementSensors = simulationStateRepository.getMovementSensors();
-        this.velocityAndDirectionSensors = simulationStateRepository.getMovementAndDirectionSensors();
     }
 
     SimulationState(long intervalInMillis,
                     Route route,
-                    Set<InternalActor> actors,
-                    Set<Camera> cameras,
-                    Set<MovementSensor> movementSensors,
-                    Set<VelocityAndDirectionSensor> velocityAndDirectionSensors)
+                    Set<InternalActor> actors)
     {
         this.intervalInMillis = intervalInMillis;
         this.route = route;
         this.actors = actors;
-        this.cameras = cameras;
-        this.movementSensors = movementSensors;
-        this.velocityAndDirectionSensors = velocityAndDirectionSensors;
     }
 
     public long getIntervalInMillis()

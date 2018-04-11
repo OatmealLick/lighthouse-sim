@@ -11,11 +11,10 @@ public class MovementSensor implements TrackingDevice
     private double radius;
     private boolean sensingMovement;
 
-    MovementSensor(final Coords coords, final double radius, final boolean sensingMovement)
+    MovementSensor(final Coords coords, final double radius)
     {
         this.coords = coords;
         this.radius = radius;
-        this.sensingMovement = sensingMovement;
     }
 
     public boolean isSensingMovement()

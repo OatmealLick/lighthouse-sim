@@ -1,9 +1,5 @@
 package org.wingtree.beans;
 
-import com.google.common.collect.Sets;
-
-import java.util.Set;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
