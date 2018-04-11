@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.immutables.value.Value;
 import org.wingtree.immutables.Immutable;
 
-@Value.Immutable
 @Immutable
-@JsonDeserialize(as = ImmutableCoords.class)
-public interface Coords
-{
-    double getX();
+@Value.Immutable
+@JsonDeserialize(as = ImmutableRouteSegment.class)
+public interface RouteSegment {
 
-    double getY();
+    Junction getFrom();
+
+    Junction getTo();
 }

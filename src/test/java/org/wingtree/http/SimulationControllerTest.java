@@ -1,6 +1,6 @@
 package org.wingtree.http;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.wingtree.beans.Junction;
@@ -12,7 +12,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.withSettings;
 
-class SimulationControllerTest
+public class SimulationControllerTest
 {
     @Test
     void getExistingJunctionBasedOnId()

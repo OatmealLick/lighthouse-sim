@@ -42,8 +42,7 @@ public class Simulation extends TimerTask
         if (distanceToCover > distanceToTarget) {
             setActorOnTarget(actor, simulationState);
             distance = distanceToCover - distanceToTarget;
-        }
-        else {
+        } else {
             distance = distanceToCover;
         }
 

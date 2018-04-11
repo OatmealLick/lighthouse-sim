@@ -1,5 +1,8 @@
 package org.wingtree;
 
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.kernel.impl.factory.GraphDatabaseFacade;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -7,6 +10,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.wingtree.beans.SimulationState;
 import org.wingtree.simulation.Simulation;
 
+import java.io.File;
 import java.util.Timer;
 
 @SpringBootApplication

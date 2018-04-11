@@ -56,19 +56,4 @@ public class SimulationState
     {
         return actors;
     }
-
-    public Set<Camera> getCameras()
-    {
-        return cameras;
-    }
-
-    public Set<MovementSensor> getMovementSensors()
-    {
-        return movementSensors;
-    }
-
-    public Set<VelocityAndDirectionSensor> getVelocityAndDirectionSensors()
-    {
-        return velocityAndDirectionSensors;
-    }
 }
