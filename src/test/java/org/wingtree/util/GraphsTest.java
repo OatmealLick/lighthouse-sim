@@ -3,7 +3,7 @@ package org.wingtree.util;
 import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.MutableGraph;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.wingtree.beans.ImmutableCoords;
 import org.wingtree.beans.ImmutableJunction;
 import org.wingtree.beans.Junction;
@@ -13,7 +13,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class GraphsTest
+
+public class GraphsTest
 {
     @Test
     void transposeGraph()

@@ -22,9 +22,6 @@ public class SimulationState
         this.intervalInMillis = 500L; // FIXME read from some configuration file?
         this.route = simulationStateRepository.getRoute();
         this.actors = simulationStateRepository.getActors();
-        this.cameras = simulationStateRepository.getCameras();
-        this.movementSensors = simulationStateRepository.getMovementSensors();
-        this.movementAndDirectionSensors = simulationStateRepository.getMovementAndDirectionSensors();
     }
 
     SimulationState(long intervalInMillis,
@@ -55,20 +52,5 @@ public class SimulationState
     public Set<InternalActor> getActors()
     {
         return actors;
-    }
-
-    public Set<Camera> getCameras()
-    {
-        return cameras;
-    }
-
-    public Set<MovementSensor> getMovementSensors()
-    {
-        return movementSensors;
-    }
-
-    public Set<MovementAndDirectionSensor> getMovementAndDirectionSensors()
-    {
-        return movementAndDirectionSensors;
     }
 }

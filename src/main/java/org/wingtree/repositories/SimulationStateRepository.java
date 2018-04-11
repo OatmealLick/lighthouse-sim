@@ -7,8 +7,6 @@ import java.util.Set;
 public interface SimulationStateRepository
 {
     Route getRoute();
+
     Set<InternalActor> getActors();
-    Set<Camera> getCameras();
-    Set<MovementSensor> getMovementSensors();
-    Set<MovementAndDirectionSensor> getMovementAndDirectionSensors();
 }
