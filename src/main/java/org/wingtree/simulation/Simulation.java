@@ -22,7 +22,7 @@ public class Simulation extends TimerTask
     public void run()
     {
         final SimulationState simulationState = applicationContext.getBean(SimulationState.class);
-
+        
         simulationState.getActors().forEach(actor -> updateActor(actor, simulationState));
         simulationState.getRoute().getJunctions().forEach(junction ->
                 junction.getTrackingDevices().forEach(trackingDevice ->
