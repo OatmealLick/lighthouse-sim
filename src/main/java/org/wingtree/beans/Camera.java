@@ -2,29 +2,23 @@ package org.wingtree.beans;
 
 import org.wingtree.util.Algebra;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class Camera implements TrackingDevice
+public class Camera extends VelocityAndDirectionSensor
 {
-    private Set<InternalActor> actorsInView;
-    private final double radius;
+    private Map<InternalActor, VelocityAndDirectionSensorReading> actorsInView;
 
-    Camera(final Set<InternalActor> actorsInView, final double radius)
+    Camera(final Coords coords, final double radius)
     {
-        this.actorsInView = actorsInView;
-        this.radius = radius;
+        super(coords, radius);
+        actorsInView = new HashMap<>();
     }
 
-    public Set<InternalActor> getActorsInView()
+    @Override
+    public Coords getCoords()
     {
-        return actorsInView;
-    }
-
-    public void setActorsInView(final Set<InternalActor> actorsInView)
-    {
-        this.actorsInView = actorsInView;
+        return coords;
     }
 
     public double getRadius()
@@ -32,35 +26,46 @@ public class Camera implements TrackingDevice
         return radius;
     }
 
-    @Override
-    public void updateState(final Coords trackingDeviceCoords, final Set<InternalActor> actors)
+    public Map<InternalActor, VelocityAndDirectionSensorReading> getActorsInView()
     {
-        actorsInView = actors.stream()
-                .filter(actor -> Algebra.isTargetInRadius(trackingDeviceCoords, radius, actor.getCurrentCoords()))
-                .collect(Collectors.toSet());
+        return actorsInView;
     }
 
     @Override
-    public boolean equals(final Object o)
+    public void updateState(final Set<InternalActor> actors)
+    {
+        actorsInView.clear();
+        actors.stream()
+              .filter(this::isMeasurementAcceptable)
+              .forEach(actor -> actorsInView.put(actor, createReadingFor(actor)));
+
+    }
+
+    @Override
+    public boolean equals(Object o)
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final Camera camera = (Camera) o;
+        Camera camera = (Camera) o;
         return Double.compare(camera.radius, radius) == 0 &&
+                Objects.equals(coords, camera.coords) &&
                 Objects.equals(actorsInView, camera.actorsInView);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(actorsInView, radius);
+
+        return Objects.hash(coords, radius, actorsInView);
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "Camera{" +
-                "actorsInView=" + actorsInView +
+                "coords=" + coords +
                 ", radius=" + radius +
+                ", actorsInView=" + actorsInView +
                 '}';
     }
 }

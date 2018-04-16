@@ -23,10 +23,10 @@ public class DefaultEmbeddedNeo4JDriverProvider implements EmbeddedNeo4jDriverPr
     private static final String X = "x";
     private static final String Y = "y";
     private static final String RADIUS = "radius";
-    private static final String SENSING_MOVEMENT = "sensing_movement";
     private static final Label LANTERN_LABEL = Label.label("lantern");
     private static final Label CAMERA_LABEL = Label.label("camera");
     private static final Label MOVEMENT_SENSOR_LABEL = Label.label("movement-sensor");
+    private static final Label VELOCITY_AND_DIRECTION_SENSOR_LABEL = Label.label("velocity-and-direction-sensor");
     private static final RelationshipType CONNECTED_TO = RelationshipType.withName("connected_to");
     private static final RelationshipType HAS = RelationshipType.withName("has");
 
@@ -59,21 +59,33 @@ public class DefaultEmbeddedNeo4JDriverProvider implements EmbeddedNeo4jDriverPr
             three.setProperty(X, 10D);
             three.setProperty(Y, 0D);
             three.setProperty(ID, "3");
+
             final Node camera = graphService.createNode();
             camera.addLabel(CAMERA_LABEL);
-            camera.setProperty(ID, "4");
-            camera.setProperty(RADIUS, 0.7D);
+            camera.setProperty(ID, "1");
+            camera.setProperty(RADIUS, 4.0D);
             final Node movementSensor = graphService.createNode();
             movementSensor.addLabel(MOVEMENT_SENSOR_LABEL);
-            movementSensor.setProperty(ID, "5");
-            movementSensor.setProperty(RADIUS, 2.5D);
-            movementSensor.setProperty(SENSING_MOVEMENT, false);
+            movementSensor.setProperty(ID, "1");
+            movementSensor.setProperty(RADIUS, 5.0D);
+            final Node velocityAndDirectionSensor = graphService.createNode();
+            velocityAndDirectionSensor.addLabel(VELOCITY_AND_DIRECTION_SENSOR_LABEL);
+            velocityAndDirectionSensor.setProperty(ID, "1");
+            velocityAndDirectionSensor.setProperty(RADIUS, 6.0D);
 
             one.createRelationshipTo(two, CONNECTED_TO);
             two.createRelationshipTo(three, CONNECTED_TO);
             three.createRelationshipTo(one, CONNECTED_TO);
+
             one.createRelationshipTo(camera, HAS);
+            one.createRelationshipTo(movementSensor, HAS);
+            one.createRelationshipTo(velocityAndDirectionSensor, HAS);
+            two.createRelationshipTo(camera, HAS);
             two.createRelationshipTo(movementSensor, HAS);
+            two.createRelationshipTo(velocityAndDirectionSensor, HAS);
+            three.createRelationshipTo(camera, HAS);
+            three.createRelationshipTo(movementSensor, HAS);
+            three.createRelationshipTo(velocityAndDirectionSensor, HAS);
 
             transaction.success();
         }

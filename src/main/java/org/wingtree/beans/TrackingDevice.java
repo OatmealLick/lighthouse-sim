@@ -4,5 +4,7 @@ import java.util.Set;
 
 public interface TrackingDevice
 {
-    void updateState(Coords trackingDeviceCoords, Set<InternalActor> actors);
+    Coords getCoords();
+
+    void updateState(Set<InternalActor> actors);
 }

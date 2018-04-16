@@ -21,7 +21,6 @@ public class InternalRepository implements SimulationStateRepository {
             .build();
     final private MovementSensor movementSensor = MovementSensorBuilder.builder()
             .withRadius(2.5f)
-            .withSensingMovement(false)
             .build();
     final private Junction one = ImmutableJunction.builder()
             .withCoords(ImmutableCoords.of(0, 0))

@@ -22,11 +22,11 @@ public class Simulation extends TimerTask
     public void run()
     {
         final SimulationState simulationState = applicationContext.getBean(SimulationState.class);
-
+        
         simulationState.getActors().forEach(actor -> updateActor(actor, simulationState));
         simulationState.getRoute().getJunctions().forEach(junction ->
                 junction.getTrackingDevices().forEach(trackingDevice ->
-                        trackingDevice.updateState(junction.getCoords(), simulationState.getActors())));
+                        trackingDevice.updateState(simulationState.getActors())));
 
         simulationState.getActors().forEach(System.out::println);
         // FIXME this was actually causing the StackOverflowException ??
@@ -49,6 +49,8 @@ public class Simulation extends TimerTask
         final double degrees = calculateDegrees(actor);
         final double newX = roundToTwoDecimalPlaces(actor.getCurrentCoords().getX() + distance * Math.cos(degrees));
         final double newY = roundToTwoDecimalPlaces(actor.getCurrentCoords().getY() + distance * Math.sin(degrees));
+
+        actor.setPreviousCoords(ImmutableCoords.of(actor.getCurrentCoords().getX(), actor.getCurrentCoords().getY()));
         actor.setCurrentCoords(ImmutableCoords.of(newX, newY));
     }
 

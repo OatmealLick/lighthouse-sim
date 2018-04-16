@@ -88,33 +88,39 @@ public class EmbeddedNeo4jRepository implements SimulationStateRepository {
     }
 
     private Junction toJunction(final Node node) {
+        Coords coords = ImmutableCoords.of(
+                (double) checkNotNull(node.getProperty(X)),
+                (double) checkNotNull(node.getProperty(Y)));
         final Set<TrackingDevice> trackingDevices = Seq.seq(node.getRelationships(HAS))
-                .map(relationship -> toTrackingDevice(relationship.getEndNode()))
+                .map(relationship -> toTrackingDevice(relationship.getEndNode(), coords))
                 .collect(Collectors.toSet());
         return ImmutableJunction.builder()
                 .withId((String) checkNotNull(node.getProperty(ID)))
-                .withCoords(ImmutableCoords.of(
-                        (double) checkNotNull(node.getProperty(X)),
-                        (double) checkNotNull(node.getProperty(Y))))
+                .withCoords(coords)
                 .withTrackingDevices(trackingDevices)
                 .build();
     }
 
-    private TrackingDevice toTrackingDevice(final Node node) {
+    private TrackingDevice toTrackingDevice(final Node node, final Coords lanternCoords) {
         final Label label = Seq.seq(node.getLabels()).findFirst().orElseThrow(IllegalStateException::new);
         switch (label.name()) {
             case "camera":
                 return CameraBuilder.builder()
-                        .withRadius((double) checkNotNull(node.getProperty(RADIUS)))
-                        .withActorsInView(ImmutableSet.of())
-                        .build();
-            case "lantern":
-                throw new IllegalStateException("Data model error. Given node is a lantern, and it is supposed to be tracking device");
+                                    .withCoords(lanternCoords)
+                                    .withRadius((double) checkNotNull(node.getProperty(RADIUS)))
+                                    .build();
             case "movement-sensor":
                 return MovementSensorBuilder.builder()
-                        .withRadius((double) checkNotNull(node.getProperty(RADIUS)))
-                        .withSensingMovement((boolean) checkNotNull(node.getProperty(SENSING_MOVEMENT)))
-                        .build();
+                                            .withCoords(lanternCoords)
+                                            .withRadius((double) checkNotNull(node.getProperty(RADIUS)))
+                                            .build();
+            case "velocity-and-direction-sensor":
+                return VelocityAndDirectionSensorBuilder.builder()
+                                                        .withCoords(lanternCoords)
+                                                        .withRadius((double) checkNotNull(node.getProperty(RADIUS)))
+                                                        .build();
+            case "lantern":
+                throw new IllegalStateException("Data model error. Given node is a lantern, and it is supposed to be tracking device");
             default:
                 throw new IllegalStateException("Unknown tracking device label");
         }
@@ -133,6 +139,7 @@ public class EmbeddedNeo4jRepository implements SimulationStateRepository {
             return ImmutableSet.of(InternalActorBuilder.builder()
                     .withId(Optional.of("KR01112"))
                     .withCurrentCoords(ImmutableCoords.of(0, 0))
+                    .withPreviousCoords(ImmutableCoords.of(0, 0))
                     .withTarget(junction)
                     .withType(ActorType.VEHICLE)
                     .withVelocity(1)

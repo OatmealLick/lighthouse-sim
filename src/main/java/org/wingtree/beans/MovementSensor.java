@@ -7,12 +7,13 @@ import java.util.Set;
 
 public class MovementSensor implements TrackingDevice
 {
-    private boolean sensingMovement;
+    private Coords coords;
     private double radius;
+    private boolean sensingMovement;
 
-    MovementSensor(final boolean sensingMovement, final double radius)
+    MovementSensor(final Coords coords, final double radius)
     {
-        this.sensingMovement = sensingMovement;
+        this.coords = coords;
         this.radius = radius;
     }
 
@@ -21,44 +22,49 @@ public class MovementSensor implements TrackingDevice
         return sensingMovement;
     }
 
+    @Override
+    public Coords getCoords()
+    {
+        return coords;
+    }
+
     public double getRadius()
     {
         return radius;
     }
 
-    public void setSensingMovement(final boolean sensingMovement)
-    {
-        this.sensingMovement = sensingMovement;
-    }
-
     @Override
-    public void updateState(final Coords trackingDeviceCoords, final Set<InternalActor> actors)
+    public void updateState(final Set<InternalActor> actors)
     {
         sensingMovement = actors.stream()
-                .anyMatch(actor -> Algebra.isTargetInRadius(trackingDeviceCoords, radius, actor.getCurrentCoords()));
+                .anyMatch(actor -> Algebra.isTargetInRadius(coords, radius, actor.getCurrentCoords()));
     }
 
     @Override
-    public boolean equals(final Object o)
+    public boolean equals(Object o)
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final MovementSensor that = (MovementSensor) o;
-        return sensingMovement == that.sensingMovement &&
-                Double.compare(that.radius, radius) == 0;
+        MovementSensor that = (MovementSensor) o;
+        return Double.compare(that.radius, radius) == 0 &&
+                sensingMovement == that.sensingMovement &&
+                Objects.equals(coords, that.coords);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(sensingMovement, radius);
+
+        return Objects.hash(coords, radius, sensingMovement);
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "MovementSensor{" +
-                "sensingMovement=" + sensingMovement +
+                "coords=" + coords +
                 ", radius=" + radius +
+                ", sensingMovement=" + sensingMovement +
                 '}';
     }
 }

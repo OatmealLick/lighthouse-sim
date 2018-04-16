@@ -12,9 +12,6 @@ public class SimulationState
     private long intervalInMillis;
     private Route route;
     private Set<InternalActor> actors;
-    private Set<Camera> cameras;
-    private Set<MovementSensor> movementSensors;
-    private Set<MovementAndDirectionSensor> movementAndDirectionSensors;
 
     @Autowired
     public SimulationState(final SimulationStateRepository simulationStateRepository)
@@ -26,17 +23,11 @@ public class SimulationState
 
     SimulationState(long intervalInMillis,
                     Route route,
-                    Set<InternalActor> actors,
-                    Set<Camera> cameras,
-                    Set<MovementSensor> movementSensors,
-                    Set<MovementAndDirectionSensor> movementAndDirectionSensors)
+                    Set<InternalActor> actors)
     {
         this.intervalInMillis = intervalInMillis;
         this.route = route;
         this.actors = actors;
-        this.cameras = cameras;
-        this.movementSensors = movementSensors;
-        this.movementAndDirectionSensors = movementAndDirectionSensors;
     }
 
     public long getIntervalInMillis()

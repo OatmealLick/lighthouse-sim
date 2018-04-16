@@ -1,29 +1,25 @@
 package org.wingtree.beans;
 
-import com.google.common.collect.Sets;
-
-import java.util.Set;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 public class CameraBuilder
 {
-    private Set<InternalActor> actorsInView = Sets.newHashSet();
+    private Coords coords;
     private double radius;
+
+    private CameraBuilder()
+    {
+    }
 
     public static CameraBuilder builder()
     {
         return new CameraBuilder();
     }
-    
-    private CameraBuilder()
-    {
-    }
 
-    public CameraBuilder withActorsInView(final Set<InternalActor> actorsInView)
+    public CameraBuilder withCoords(final Coords coords)
     {
-        this.actorsInView = actorsInView;
+        this.coords = coords;
         return this;
     }
 
@@ -35,7 +31,8 @@ public class CameraBuilder
 
     public Camera build()
     {
+        checkNotNull(coords);
         checkState(radius > 0);
-        return new Camera(actorsInView, radius);
+        return new Camera(coords, radius);
     }
 }

@@ -9,18 +9,21 @@ public class InternalActor
     private final double velocityInMetersPerSec;
     private final Optional<String> id;
     private Coords currentCoords;
+    private Coords previousCoords;
     private Junction target;
 
     InternalActor(final ActorType type,
                   final double velocityInMetersPerSec,
                   final Optional<String> id,
                   final Coords currentCoords,
+                  final Coords previousCoords,
                   final Junction target)
     {
         this.type = type;
         this.velocityInMetersPerSec = velocityInMetersPerSec;
         this.id = id;
         this.currentCoords = currentCoords;
+        this.previousCoords = previousCoords;
         this.target = target;
     }
 
@@ -44,6 +47,11 @@ public class InternalActor
         return currentCoords;
     }
 
+    public Coords getPreviousCoords()
+    {
+        return previousCoords;
+    }
+
     public Junction getTarget()
     {
         return target;
@@ -59,28 +67,35 @@ public class InternalActor
         this.currentCoords = currentCoords;
     }
 
+    public void setPreviousCoords(Coords coords)
+    {
+        this.previousCoords = coords;
+    }
+
     public void setTarget(final Junction target)
     {
         this.target = target;
     }
 
     @Override
-    public boolean equals(final Object o)
+    public boolean equals(Object o)
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final InternalActor that = (InternalActor) o;
+        InternalActor that = (InternalActor) o;
         return Double.compare(that.velocityInMetersPerSec, velocityInMetersPerSec) == 0 &&
                 type == that.type &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(currentCoords, that.currentCoords) &&
+                Objects.equals(previousCoords, that.previousCoords) &&
                 Objects.equals(target, that.target);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(type, velocityInMetersPerSec, id, currentCoords, target);
+
+        return Objects.hash(type, velocityInMetersPerSec, id, currentCoords, previousCoords, target);
     }
 
     @Override
@@ -91,6 +106,7 @@ public class InternalActor
                 ", velocityInMetersPerSec=" + velocityInMetersPerSec +
                 ", id=" + id +
                 ", currentCoords=" + currentCoords +
+                ", previousCoords=" + previousCoords +
                 '}';
     }
 }
