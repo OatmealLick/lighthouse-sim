@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class GraphsTest
 {
     @Test
-    void transposeGraph()
+    public void transposeGraph()
     {
         // given
         Graph<Junction> graph = createSampleGraph();
@@ -31,7 +31,7 @@ public class GraphsTest
     }
 
     @Test
-    void allNodesAreReachableForSampleGraph()
+    public void allNodesAreReachableForSampleGraph()
     {
         // given
         Graph<Junction> graph = createSampleGraph();
@@ -45,7 +45,7 @@ public class GraphsTest
     }
 
     @Test
-    void notAllNodesAreReachableForUnacceptableRoadGraph()
+    public void notAllNodesAreReachableForUnacceptableRoadGraph()
     {
         // given
         Graph<Junction> graph = createUnacceptableRoadGraph();
@@ -59,7 +59,7 @@ public class GraphsTest
     }
 
     @Test
-    void sampleGraphIsStronglyConnected()
+    public void sampleGraphIsStronglyConnected()
     {
         // given
         Graph<Junction> graph = createSampleGraph();
@@ -72,7 +72,7 @@ public class GraphsTest
     }
 
     @Test
-    void unacceptableRoadGraphIsNotStronglyConnected()
+    public void unacceptableRoadGraphIsNotStronglyConnected()
     {
         // given
         Graph<Junction> graph = createUnacceptableRoadGraph();
