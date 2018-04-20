@@ -15,7 +15,7 @@ import static org.mockito.Mockito.withSettings;
 public class SimulationTest
 {
     @Test
-    void updatedActorApproachesTargetInVerticalLine()
+    public void updatedActorApproachesTargetInVerticalLine()
     {
         // given
         ApplicationContext applicationCtxMock = mock(ApplicationContext.class, withSettings().stubOnly());
@@ -25,6 +25,7 @@ public class SimulationTest
                 .withType(ActorType.VEHICLE)
                 .withVelocity(1)
                 .withCurrentCoords(ImmutableCoords.of(0, 5))
+                .withPreviousCoords(ImmutableCoords.of(0, 0))
                 .withTarget(target)
                 .build();
         SimulationState simulationState = customSimulationState();
@@ -47,7 +48,7 @@ public class SimulationTest
     // TODO add test for movement in "negative direction" (with decreasing x and y coords values)
 
     @Test
-    void updatedActorApproachesTargetInSlantedLine()
+    public void updatedActorApproachesTargetInSlantedLine()
     {
         // given
         ApplicationContext applicationCtxMock = mock(ApplicationContext.class, withSettings().stubOnly());
@@ -57,6 +58,7 @@ public class SimulationTest
                 .withType(ActorType.VEHICLE)
                 .withVelocity(1)
                 .withCurrentCoords(ImmutableCoords.of(5, 5))
+                .withPreviousCoords(ImmutableCoords.of(0, 0))
                 .withTarget(target)
                 .build();
         SimulationState simulationState = customSimulationState();
@@ -78,7 +80,7 @@ public class SimulationTest
     }
 
     @Test
-    void updatedActorExceedsTargetAndTravelsTowardsNewOne()
+    public void updatedActorExceedsTargetAndTravelsTowardsNewOne()
     {
         // given
         ApplicationContext applicationCtxMock = mock(ApplicationContext.class, withSettings().stubOnly());
@@ -89,6 +91,7 @@ public class SimulationTest
                 .withType(ActorType.VEHICLE)
                 .withVelocity(1)
                 .withCurrentCoords(ImmutableCoords.of(0.5, 0))
+                .withPreviousCoords(ImmutableCoords.of(0, 0))
                 .withTarget(target)
                 .build();
         SimulationState simulationState = customSimulationState();
@@ -116,13 +119,13 @@ public class SimulationTest
         Junction three = ImmutableJunction.of("3", ImmutableCoords.of(10, 0), ImmutableSet.of());
 
         return SimulationStateBuilder.builder()
-                                     .withIntervalInMillis(1000L)
-                                     .withActors(ImmutableSet.of())
-                                     .withRoute(RouteBuilder.builder()
-                                                            .addRouteSegment(one, two)
-                                                            .addRouteSegment(two, three)
-                                                            .addRouteSegment(three, one)
-                                                            .build())
-                                     .build();
+                .withIntervalInMillis(1000L)
+                .withActors(ImmutableSet.of())
+                .withRoute(RouteBuilder.builder()
+                        .addRouteSegment(one, two)
+                        .addRouteSegment(two, three)
+                        .addRouteSegment(three, one)
+                        .build())
+                .build();
     }
 }

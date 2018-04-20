@@ -1,7 +1,6 @@
 package org.wingtree.http;
 
 import org.junit.Test;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.wingtree.beans.Junction;
 import org.wingtree.beans.SimulationState;
@@ -15,7 +14,7 @@ import static org.mockito.Mockito.withSettings;
 public class SimulationControllerTest
 {
     @Test
-    void getExistingJunctionBasedOnId()
+    public void getExistingJunctionBasedOnId()
     {
         // given
         ApplicationContext applicationContextMock = createApplicationContextMockReturningDummySimulationState();
@@ -28,7 +27,7 @@ public class SimulationControllerTest
     }
 
     @Test
-    void getNonexistentJunctionBasedOnId()
+    public void getNonexistentJunctionBasedOnId()
     {
         // given
         ApplicationContext applicationContextMock = createApplicationContextMockReturningDummySimulationState();
