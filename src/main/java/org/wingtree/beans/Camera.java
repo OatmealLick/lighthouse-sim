@@ -1,18 +1,18 @@
 package org.wingtree.beans;
 
-import org.wingtree.util.Algebra;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 public class Camera extends VelocityAndDirectionSensor
 {
-    private Map<InternalActor, VelocityAndDirectionSensorReading> actorsInView;
+    private List<VelocityAndDirectionSensorReading> actorsInView;
 
     Camera(final Coords coords, final double radius)
     {
         super(coords, radius);
-        actorsInView = new HashMap<>();
+        actorsInView = new ArrayList<>();
     }
 
     @Override
@@ -26,7 +26,7 @@ public class Camera extends VelocityAndDirectionSensor
         return radius;
     }
 
-    public Map<InternalActor, VelocityAndDirectionSensorReading> getActorsInView()
+    public List<VelocityAndDirectionSensorReading> getActorsInView()
     {
         return actorsInView;
     }
@@ -36,8 +36,9 @@ public class Camera extends VelocityAndDirectionSensor
     {
         actorsInView.clear();
         actors.stream()
-              .filter(this::isMeasurementAcceptable)
-              .forEach(actor -> actorsInView.put(actor, createReadingFor(actor)));
+                .filter(this::isMeasurementAcceptable)
+                .map(this::createReadingFor)
+                .forEach(actorsInView::add);
 
     }
 
