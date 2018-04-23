@@ -1,9 +1,9 @@
 package org.wingtree.beans;
 
-import org.wingtree.util.Algebra;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 public class Camera extends VelocityAndDirectionSensor
 {
