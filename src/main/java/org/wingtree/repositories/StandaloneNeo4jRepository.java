@@ -20,7 +20,7 @@ import java.util.Set;
 @Profile({"production"})
 public class StandaloneNeo4jRepository implements SimulationStateRepository
 {
-    private static final String ID = "id";
+    private static final String ID = "node_id";
     private static final String X = "x";
     private static final String Y = "y";
     private static final String RADIUS = "radius";
@@ -45,7 +45,7 @@ public class StandaloneNeo4jRepository implements SimulationStateRepository
                 final Node lantern = extractSingleNode(statementResult.next());
                 final Junction from = toJunction(session, lantern);
                 final StatementResult connectedToResults = session.run(String.format(
-                        "MATCH (:lantern{id:\"%s\"})-[%s]->(x) RETURN x",
+                        "MATCH (:lantern{node_id:\"%s\"})-[%s]->(x) RETURN x",
                         lantern.get(ID).asString(),
                         CONNECTED_TO));
                 while (connectedToResults.hasNext()) {
@@ -70,20 +70,20 @@ public class StandaloneNeo4jRepository implements SimulationStateRepository
         final ImmutableSet.Builder<TrackingDevice> trackingDevicesBuilder = new ImmutableSet.Builder<>();
 
         final StatementResult cameraResults =
-                session.run(String.format("MATCH (:lantern{id:\"%s\"})-[%s]->(cam:camera) RETURN cam;",
+                session.run(String.format("MATCH (:lantern{node_id:\"%s\"})-[%s]->(cam:camera) RETURN cam;",
                         lanternId, HAS));
         while (cameraResults.hasNext()) {
             trackingDevicesBuilder.add(toCamera(extractSingleNode(cameraResults.next()), lanternCoords));
         }
 
         final StatementResult msResults = session.run(String.format(
-                "MATCH (:lantern{id:\"%s\"})-[%s]->(ms:movement_sensor) RETURN ms;", lanternId, HAS));
+                "MATCH (:lantern{node_id:\"%s\"})-[%s]->(ms:movement_sensor) RETURN ms;", lanternId, HAS));
         while (msResults.hasNext()) {
             trackingDevicesBuilder.add(toMovementSensor(extractSingleNode(msResults.next()), lanternCoords));
         }
 
         final StatementResult vdsResults = session.run(String.format(
-                "MATCH (:lantern{id:\"%s\"})-[%s]->(vds:velocity_and_direction_sensor) RETURN vds;", lanternId, HAS));
+                "MATCH (:lantern{node_id:\"%s\"})-[%s]->(vds:velocity_and_direction_sensor) RETURN vds;", lanternId, HAS));
         while (vdsResults.hasNext()) {
             trackingDevicesBuilder.add(toVelocityAndDirectionSensor(extractSingleNode(vdsResults.next()), lanternCoords));
         }

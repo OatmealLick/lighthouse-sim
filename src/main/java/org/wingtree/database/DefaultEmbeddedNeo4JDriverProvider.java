@@ -17,9 +17,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @EnableConfigurationProperties
 public class DefaultEmbeddedNeo4JDriverProvider implements EmbeddedNeo4jDriverProvider
 {
-
     //todo move to properties
-    private static final String ID = "id";
+    private static final String ID = "node_id";
     private static final String X = "x";
     private static final String Y = "y";
     private static final String RADIUS = "radius";
