@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * One of tracking devices. Holds data in readings {@see VelocityAndDirectionSensorReading}
+ */
 public class VelocityAndDirectionSensor implements TrackingDevice
 {
     protected Coords coords;

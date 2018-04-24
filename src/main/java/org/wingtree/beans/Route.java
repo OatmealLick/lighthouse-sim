@@ -7,6 +7,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * This is the class holding graph of lanterns.
+ */
 public class Route
 {
     final ImmutableGraph<Junction> routeGraph;

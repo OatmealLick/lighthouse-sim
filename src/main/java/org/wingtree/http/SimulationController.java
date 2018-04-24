@@ -10,6 +10,9 @@ import org.wingtree.beans.Junction;
 import org.wingtree.beans.SimulationState;
 import org.wingtree.beans.TrackingDevice;
 
+/**
+ * Handles http requests and provides data about simulation for user.
+ */
 @RestController
 public class SimulationController
 {
