@@ -7,6 +7,9 @@ import org.wingtree.beans.*;
 
 import java.util.TimerTask;
 
+/**
+ * Class running simulation. Updates SimulationState each simulation step.
+ */
 @Component
 public class Simulation extends TimerTask
 {

@@ -19,6 +19,9 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Implementation of {@see SimulationStateRepository} using embedded neo4j.
+ */
 @Component
 @Profile({"embedded-neo4j"})
 public class EmbeddedNeo4jRepository implements SimulationStateRepository {

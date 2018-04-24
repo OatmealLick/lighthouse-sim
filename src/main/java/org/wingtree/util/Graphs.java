@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Static utility class for graphs.
+ */
 public class Graphs
 {
     public static <T> boolean isStronglyConnected(Graph<T> graph)
