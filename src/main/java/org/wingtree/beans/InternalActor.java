@@ -3,6 +3,10 @@ package org.wingtree.beans;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Actor is a moving object - either vehicle or a pedestrian. With each step of simulation actors get updated and new
+ * coordinates are assigned to them.
+ */
 public class InternalActor
 {
     private final ActorType type;

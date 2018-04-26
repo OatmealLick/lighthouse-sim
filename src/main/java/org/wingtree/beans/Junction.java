@@ -6,6 +6,9 @@ import org.wingtree.immutables.Immutable;
 
 import java.util.Set;
 
+/**
+ * This is class representing lantern. It has an id, position(coordinates) and set of tracking devices.
+ */
 @Value.Immutable
 @Immutable
 @JsonDeserialize(as = ImmutableJunction.class)
