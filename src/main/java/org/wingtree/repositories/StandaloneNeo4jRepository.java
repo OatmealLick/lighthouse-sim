@@ -24,6 +24,9 @@ public class StandaloneNeo4jRepository implements SimulationStateRepository
     private static final String X = "x";
     private static final String Y = "y";
     private static final String RADIUS = "radius";
+    private static final String DURATION_TIME = "simulationDurationTime";
+    private static final String TIME_STEP = "simulationTimeStep";
+    private static final String ANGLE = "measurementToleranceAngle";
     private static final String HAS = ":HAS";
     private static final String CONNECTED_TO = ":CONNECTED_TO";
 
@@ -142,6 +145,19 @@ public class StandaloneNeo4jRepository implements SimulationStateRepository
                     .withType(ActorType.VEHICLE)
                     .withVelocity(1)
                     .build());
+        }
+    }
+
+    @Override
+    public Configuration getConfiguration()
+    {
+        try (final Session session = driver.session()) {
+            final Node configuration = extractSingleNode(session.run("MATCH (c:configuration) RETURN c").next());
+            return ImmutableConfiguration.builder()
+                    .withSimulationDurationTime(configuration.get(DURATION_TIME).asInt())
+                    .withSimulationTimeStep(configuration.get(TIME_STEP).asLong())
+                    .withMeasurementToleranceAngle(configuration.get(ANGLE).asDouble())
+                    .build();
         }
     }
 }

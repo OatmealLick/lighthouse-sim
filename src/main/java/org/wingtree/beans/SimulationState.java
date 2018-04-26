@@ -9,30 +9,30 @@ import java.util.Set;
 @Component
 public class SimulationState
 {
-    private long intervalInMillis;
+    private Configuration configuration;
     private Route route;
     private Set<InternalActor> actors;
 
     @Autowired
     public SimulationState(final SimulationStateRepository simulationStateRepository)
     {
-        this.intervalInMillis = 500L; // FIXME read from some configuration file?
+        this.configuration = simulationStateRepository.getConfiguration();
         this.route = simulationStateRepository.getRoute();
         this.actors = simulationStateRepository.getActors();
     }
 
-    SimulationState(long intervalInMillis,
+    SimulationState(Configuration configuration,
                     Route route,
                     Set<InternalActor> actors)
     {
-        this.intervalInMillis = intervalInMillis;
+        this.configuration = configuration;
         this.route = route;
         this.actors = actors;
     }
 
-    public long getIntervalInMillis()
+    public Configuration getConfiguration()
     {
-        return intervalInMillis;
+        return configuration;
     }
 
     public Route getRoute()

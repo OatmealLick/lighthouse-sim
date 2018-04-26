@@ -9,4 +9,6 @@ public interface SimulationStateRepository
     Route getRoute();
 
     Set<InternalActor> getActors();
+
+    Configuration getConfiguration();
 }

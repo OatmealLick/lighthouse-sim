@@ -22,10 +22,14 @@ public class DefaultEmbeddedNeo4JDriverProvider implements EmbeddedNeo4jDriverPr
     private static final String X = "x";
     private static final String Y = "y";
     private static final String RADIUS = "radius";
+    private static final String DURATION_TIME = "simulationDurationTime";
+    private static final String TIME_STEP = "simulationTimeStep";
+    private static final String ANGLE = "measurementToleranceAngle";
     private static final Label LANTERN_LABEL = Label.label("lantern");
     private static final Label CAMERA_LABEL = Label.label("camera");
     private static final Label MOVEMENT_SENSOR_LABEL = Label.label("movement-sensor");
     private static final Label VELOCITY_AND_DIRECTION_SENSOR_LABEL = Label.label("velocity-and-direction-sensor");
+    private static final Label CONFIGURATION = Label.label("configuration");
     private static final RelationshipType CONNECTED_TO = RelationshipType.withName("connected_to");
     private static final RelationshipType HAS = RelationshipType.withName("has");
 
@@ -85,6 +89,12 @@ public class DefaultEmbeddedNeo4JDriverProvider implements EmbeddedNeo4jDriverPr
             three.createRelationshipTo(camera, HAS);
             three.createRelationshipTo(movementSensor, HAS);
             three.createRelationshipTo(velocityAndDirectionSensor, HAS);
+
+            final Node configuration = graphService.createNode();
+            configuration.addLabel(CONFIGURATION);
+            configuration.setProperty(DURATION_TIME, 60);
+            configuration.setProperty(TIME_STEP, 500);
+            configuration.setProperty(ANGLE, 15);
 
             transaction.success();
         }

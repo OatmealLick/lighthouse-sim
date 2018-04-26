@@ -4,18 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.wingtree.beans.ActorType;
-import org.wingtree.beans.Camera;
-import org.wingtree.beans.CameraBuilder;
-import org.wingtree.beans.ImmutableCoords;
-import org.wingtree.beans.ImmutableJunction;
-import org.wingtree.beans.InternalActor;
-import org.wingtree.beans.InternalActorBuilder;
-import org.wingtree.beans.Junction;
-import org.wingtree.beans.MovementSensor;
-import org.wingtree.beans.MovementSensorBuilder;
-import org.wingtree.beans.Route;
-import org.wingtree.beans.RouteBuilder;
+import org.wingtree.beans.*;
 
 import java.util.Optional;
 import java.util.Set;
@@ -66,5 +55,15 @@ public class InternalRepository implements SimulationStateRepository {
                 .withType(ActorType.VEHICLE)
                 .withVelocity(1)
                 .build());
+    }
+
+    @Override
+    public Configuration getConfiguration()
+    {
+        return ImmutableConfiguration.builder()
+                .withSimulationDurationTime(60)
+                .withSimulationTimeStep(500)
+                .withMeasurementToleranceAngle(15)
+                .build();
     }
 }

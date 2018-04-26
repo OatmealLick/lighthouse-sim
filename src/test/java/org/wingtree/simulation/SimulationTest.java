@@ -119,7 +119,11 @@ public class SimulationTest
         Junction three = ImmutableJunction.of("3", ImmutableCoords.of(10, 0), ImmutableSet.of());
 
         return SimulationStateBuilder.builder()
-                .withIntervalInMillis(1000L)
+                .withConfiguration(ImmutableConfiguration.builder()
+                                                         .withSimulationDurationTime(60)
+                                                         .withSimulationTimeStep(1000)
+                                                         .withMeasurementToleranceAngle(15)
+                                                         .build())
                 .withActors(ImmutableSet.of())
                 .withRoute(RouteBuilder.builder()
                         .addRouteSegment(one, two)

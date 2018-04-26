@@ -26,10 +26,10 @@ public class EmbeddedNeo4jRepository implements SimulationStateRepository {
     private static final String X = "x";
     private static final String Y = "y";
     private static final String RADIUS = "radius";
-    private static final String SENSING_MOVEMENT = "sensing_movement";
-    private static final Label LANTERN_LABEL = Label.label("lantern");
-    private static final Label CAMERA_LABEL = Label.label("camera");
-    private static final Label MOVEMENT_SENSOR_LABEL = Label.label("movement-sensor");
+    private static final String DURATION_TIME = "simulationDurationTime";
+    private static final String TIME_STEP = "simulationTimeStep";
+    private static final String ANGLE = "measurementToleranceAngle";
+    private static final Label CONFIGURATION = Label.label("configuration");
     private static final RelationshipType CONNECTED_TO = RelationshipType.withName("connected_to");
     private static final RelationshipType HAS = RelationshipType.withName("has");
 
@@ -144,6 +144,24 @@ public class EmbeddedNeo4jRepository implements SimulationStateRepository {
                     .withType(ActorType.VEHICLE)
                     .withVelocity(1)
                     .build());
+        }
+    }
+
+    @Override
+    public Configuration getConfiguration()
+    {
+        try (final Transaction transaction = graphService.beginTx()) {
+            Node configuration = graphService.findNodes(CONFIGURATION)
+                                    .stream()
+                                    .findFirst()
+                                    .orElseThrow(IllegalStateException::new);
+            transaction.success();
+
+            return ImmutableConfiguration.builder()
+                    .withSimulationDurationTime((int) configuration.getProperty(DURATION_TIME))
+                    .withSimulationTimeStep((long) configuration.getProperty(TIME_STEP))
+                    .withMeasurementToleranceAngle((double) configuration.getProperty(ANGLE))
+                    .build();
         }
     }
 }
