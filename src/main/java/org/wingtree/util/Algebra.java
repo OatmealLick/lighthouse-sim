@@ -9,7 +9,7 @@ import org.wingtree.beans.InternalActor;
  */
 public class Algebra
 {
-    public static double parallelAcceptanceDegreeError = Math.toRadians(10);
+    public static double parallelAcceptanceDegreeError = Math.toRadians(10); // TODO CONFIGURATION
 
     public static boolean isTargetInRadius(final Coords homeCoords,
                                            final double radius,

@@ -21,7 +21,7 @@ public class SimulationState
     @Autowired
     public SimulationState(final SimulationStateRepository simulationStateRepository)
     {
-        this.intervalInMillis = 500L; // FIXME read from some configuration file?
+        this.intervalInMillis = 500L; // TODO CONFIGURATION
         this.route = simulationStateRepository.getRoute();
         this.actors = simulationStateRepository.getActors();
     }

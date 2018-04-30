@@ -27,6 +27,7 @@ public class Application
         long intervalInMillis = context.getBean(SimulationState.class).getIntervalInMillis();
 
         timer.scheduleAtFixedRate(simulation, 0, intervalInMillis);
-        Thread.sleep(60000);
+        int simulationTimeInMillis = 60000; // TODO CONFIGURATION
+        Thread.sleep(simulationTimeInMillis);
     }
 }

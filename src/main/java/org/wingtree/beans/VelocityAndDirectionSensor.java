@@ -77,7 +77,7 @@ public class VelocityAndDirectionSensor implements TrackingDevice
         double angle = Algebra.getRelativeAngle(previous, current);
         double projectedVectorNorm = current.getNorm() * Math.cos(angle);
 
-        // FIXME move fixed interval to ConfigurationParameters
-        return Math.abs(previous.getNorm() - projectedVectorNorm) / 0.5;
+        double intervalInSeconds = 0.5; // TODO CONFIGURATION
+        return Math.abs(previous.getNorm() - projectedVectorNorm) / intervalInSeconds;
     }
 }
