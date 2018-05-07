@@ -43,7 +43,6 @@ public class SimulationStateBuilder
         checkNotNull(configuration);
         checkState(configuration.getSimulationTimeStep() > 0);
         checkState(configuration.getSimulationDurationTime() > 0);
-        checkState(configuration.getMeasurementToleranceAngle() > 0);
         checkNotNull(route);
         checkNotNull(actors);
 

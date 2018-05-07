@@ -5,18 +5,26 @@ import org.wingtree.util.Algebra;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class VelocityAndDirectionSensor implements TrackingDevice
 {
     protected Coords coords;
     protected double radius;
+    protected double angle;
+    protected double timeStep;
     private List<VelocityAndDirectionSensorReading> readings;
 
-    public VelocityAndDirectionSensor(final Coords coords, final double radius)
+    VelocityAndDirectionSensor(final Coords coords,
+                               final double radius,
+                               final double angle,
+                               final long timeStep)
     {
         this.coords = coords;
         this.radius = radius;
+        this.angle = angle;
+        this.timeStep = timeStep / 1000;
         this.readings = new ArrayList<>();
     }
 
@@ -74,7 +82,37 @@ public class VelocityAndDirectionSensor implements TrackingDevice
         double angle = Algebra.getRelativeAngle(previous, current);
         double projectedVectorNorm = current.getNorm() * Math.cos(angle);
 
-        // FIXME move fixed interval to ConfigurationParameters
-        return Math.abs(previous.getNorm() - projectedVectorNorm) / 0.5;
+        return Math.abs(previous.getNorm() - projectedVectorNorm) / timeStep;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VelocityAndDirectionSensor that = (VelocityAndDirectionSensor) o;
+        return Double.compare(that.radius, radius) == 0 &&
+                Double.compare(that.angle, angle) == 0 &&
+                Double.compare(that.timeStep, timeStep) == 0 &&
+                Objects.equals(coords, that.coords) &&
+                Objects.equals(readings, that.readings);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(coords, radius, angle, timeStep, readings);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "VelocityAndDirectionSensor{" +
+                "coords=" + coords +
+                ", radius=" + radius +
+                ", angle=" + angle +
+                ", timeStep=" + timeStep +
+                ", readings=" + readings +
+                '}';
     }
 }

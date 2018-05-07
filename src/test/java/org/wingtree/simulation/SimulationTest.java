@@ -21,7 +21,7 @@ public class SimulationTest
         ApplicationContext applicationCtxMock = mock(ApplicationContext.class, withSettings().stubOnly());
         Junction target = ImmutableJunction.of("2", ImmutableCoords.of(0, 10), ImmutableSet.of());
         InternalActor actor = InternalActorBuilder.builder()
-                .withId(Optional.of("KR12345"))
+                .withId("KR12345")
                 .withType(ActorType.VEHICLE)
                 .withVelocity(1)
                 .withCurrentCoords(ImmutableCoords.of(0, 5))
@@ -54,7 +54,7 @@ public class SimulationTest
         ApplicationContext applicationCtxMock = mock(ApplicationContext.class, withSettings().stubOnly());
         Junction target = ImmutableJunction.of("3", ImmutableCoords.of(10, 0), ImmutableSet.of());
         InternalActor actor = InternalActorBuilder.builder()
-                .withId(Optional.of("KR12345"))
+                .withId("KR12345")
                 .withType(ActorType.VEHICLE)
                 .withVelocity(1)
                 .withCurrentCoords(ImmutableCoords.of(5, 5))
@@ -87,7 +87,7 @@ public class SimulationTest
         Junction target = ImmutableJunction.of("1", ImmutableCoords.of(0, 0), ImmutableSet.of());
         Junction newTarget = ImmutableJunction.of("2", ImmutableCoords.of(0, 10), ImmutableSet.of());
         InternalActor actor = InternalActorBuilder.builder()
-                .withId(Optional.of("KR12345"))
+                .withId("KR12345")
                 .withType(ActorType.VEHICLE)
                 .withVelocity(1)
                 .withCurrentCoords(ImmutableCoords.of(0.5, 0))
@@ -122,7 +122,6 @@ public class SimulationTest
                 .withConfiguration(ImmutableConfiguration.builder()
                                                          .withSimulationDurationTime(60)
                                                          .withSimulationTimeStep(1000)
-                                                         .withMeasurementToleranceAngle(15)
                                                          .build())
                 .withActors(ImmutableSet.of())
                 .withRoute(RouteBuilder.builder()

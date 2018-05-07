@@ -1,29 +1,18 @@
 package org.wingtree.beans;
 
-import org.wingtree.util.Algebra;
-
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Camera extends VelocityAndDirectionSensor
 {
     private Map<InternalActor, VelocityAndDirectionSensorReading> actorsInView;
 
-    Camera(final Coords coords, final double radius)
+    Camera(final Coords coords,
+           final double radius,
+           final double angle,
+           final long timeStep)
     {
-        super(coords, radius);
+        super(coords, radius, angle, timeStep);
         actorsInView = new HashMap<>();
-    }
-
-    @Override
-    public Coords getCoords()
-    {
-        return coords;
-    }
-
-    public double getRadius()
-    {
-        return radius;
     }
 
     public Map<InternalActor, VelocityAndDirectionSensorReading> getActorsInView()
@@ -47,16 +36,14 @@ public class Camera extends VelocityAndDirectionSensor
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Camera camera = (Camera) o;
-        return Double.compare(camera.radius, radius) == 0 &&
-                Objects.equals(coords, camera.coords) &&
-                Objects.equals(actorsInView, camera.actorsInView);
+        return Objects.equals(actorsInView, camera.actorsInView);
     }
 
     @Override
     public int hashCode()
     {
 
-        return Objects.hash(coords, radius, actorsInView);
+        return Objects.hash(actorsInView);
     }
 
     @Override

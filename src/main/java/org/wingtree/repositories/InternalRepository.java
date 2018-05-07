@@ -12,8 +12,10 @@ import java.util.stream.Stream;
 
 @Component
 @Profile("development")
-public class InternalRepository implements SimulationStateRepository {
-    final private Camera camera = CameraBuilder.builder()
+public class InternalRepository implements SimulationStateRepository
+{
+    private static final long TIME_STEP = 500;
+    final private Camera camera = CameraBuilder.builder(TIME_STEP)
             .withCoords(ImmutableCoords.of(0, 0))
             .withRadius(0.7f)
             .build();
@@ -48,7 +50,7 @@ public class InternalRepository implements SimulationStateRepository {
     @Override
     public Set<InternalActor> getActors() {
         return ImmutableSet.of(InternalActorBuilder.builder()
-                .withId(Optional.of("KR01112"))
+                .withId("KR01112")
                 .withCurrentCoords(ImmutableCoords.of(0, 0))
                 .withPreviousCoords(ImmutableCoords.of(1,0))
                 .withTarget(two)
@@ -63,7 +65,6 @@ public class InternalRepository implements SimulationStateRepository {
         return ImmutableConfiguration.builder()
                 .withSimulationDurationTime(60)
                 .withSimulationTimeStep(500)
-                .withMeasurementToleranceAngle(15)
                 .build();
     }
 }

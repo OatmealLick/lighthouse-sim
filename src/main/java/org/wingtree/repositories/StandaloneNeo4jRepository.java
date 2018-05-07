@@ -13,33 +13,52 @@ import org.springframework.stereotype.Component;
 import org.wingtree.beans.*;
 import org.wingtree.database.StandaloneNeo4jDriverProvider;
 
-import java.util.Optional;
 import java.util.Set;
 
 @Component
 @Profile({"production"})
 public class StandaloneNeo4jRepository implements SimulationStateRepository
 {
-    private static final String ID = "node_id";
+    private static final String ID = "nodeId";
     private static final String X = "x";
     private static final String Y = "y";
     private static final String RADIUS = "radius";
+    private static final String ANGLE = "angle";
     private static final String DURATION_TIME = "simulationDurationTime";
     private static final String TIME_STEP = "simulationTimeStep";
-    private static final String ANGLE = "measurementToleranceAngle";
+    private static final String VEHICLE_ID = "id";
+    private static final String START_NODE_ID = "startNodeId";
+    private static final String TARGET_NODE_ID = "targetNodeId";
+    private static final String VELOCITY = "velocity";
     private static final String HAS = ":HAS";
     private static final String CONNECTED_TO = ":CONNECTED_TO";
 
     private final Driver driver;
+    private final Configuration configuration;
+    private final Route route;
+
+    private static int pedestrianId = 1;
 
     @Autowired
     public StandaloneNeo4jRepository(final StandaloneNeo4jDriverProvider provider)
     {
-        driver = provider.get();
+        this.driver = provider.get();
+        this.configuration = loadConfiguration();
+        this.route = loadRoute();
     }
 
-    @Override
-    public Route getRoute()
+    private Configuration loadConfiguration()
+    {
+        try (final Session session = driver.session()) {
+            final Node configuration = extractSingleNode(session.run("MATCH (c:configuration) RETURN c").next());
+            return ImmutableConfiguration.builder()
+                                         .withSimulationDurationTime(configuration.get(DURATION_TIME).asInt())
+                                         .withSimulationTimeStep(configuration.get(TIME_STEP).asLong())
+                                         .build();
+        }
+    }
+
+    private Route loadRoute()
     {
         final Set<RouteSegment> routeSegments = Sets.newHashSet();
         try (final Session session = driver.session()) {
@@ -48,7 +67,8 @@ public class StandaloneNeo4jRepository implements SimulationStateRepository
                 final Node lantern = extractSingleNode(statementResult.next());
                 final Junction from = toJunction(session, lantern);
                 final StatementResult connectedToResults = session.run(String.format(
-                        "MATCH (:lantern{node_id:\"%s\"})-[%s]->(x) RETURN x",
+                        "MATCH (:lantern{%s:\"%s\"})-[%s]->(x) RETURN x",
+                        ID,
                         lantern.get(ID).asString(),
                         CONNECTED_TO));
                 while (connectedToResults.hasNext()) {
@@ -73,20 +93,21 @@ public class StandaloneNeo4jRepository implements SimulationStateRepository
         final ImmutableSet.Builder<TrackingDevice> trackingDevicesBuilder = new ImmutableSet.Builder<>();
 
         final StatementResult cameraResults =
-                session.run(String.format("MATCH (:lantern{node_id:\"%s\"})-[%s]->(cam:camera) RETURN cam;",
-                        lanternId, HAS));
+                session.run(String.format("MATCH (:lantern{%s:\"%s\"})-[%s]->(cam:camera) RETURN cam;",
+                        ID, lanternId, HAS));
         while (cameraResults.hasNext()) {
             trackingDevicesBuilder.add(toCamera(extractSingleNode(cameraResults.next()), lanternCoords));
         }
 
         final StatementResult msResults = session.run(String.format(
-                "MATCH (:lantern{node_id:\"%s\"})-[%s]->(ms:movement_sensor) RETURN ms;", lanternId, HAS));
+                "MATCH (:lantern{%s:\"%s\"})-[%s]->(ms:movement_sensor) RETURN ms;", ID, lanternId, HAS));
         while (msResults.hasNext()) {
             trackingDevicesBuilder.add(toMovementSensor(extractSingleNode(msResults.next()), lanternCoords));
         }
 
         final StatementResult vdsResults = session.run(String.format(
-                "MATCH (:lantern{node_id:\"%s\"})-[%s]->(vds:velocity_and_direction_sensor) RETURN vds;", lanternId, HAS));
+                "MATCH (:lantern{%s:\"%s\"})-[%s]->(vds:velocity_and_direction_sensor) RETURN vds;",
+                ID, lanternId, HAS));
         while (vdsResults.hasNext()) {
             trackingDevicesBuilder.add(toVelocityAndDirectionSensor(extractSingleNode(vdsResults.next()), lanternCoords));
         }
@@ -95,9 +116,10 @@ public class StandaloneNeo4jRepository implements SimulationStateRepository
 
     private Camera toCamera(final Node node, final Coords lanternCoords)
     {
-        return CameraBuilder.builder()
+        return CameraBuilder.builder(configuration.getSimulationTimeStep())
                             .withCoords(lanternCoords)
                             .withRadius(node.get(RADIUS).asDouble())
+                            .withAngle(node.get(ANGLE).asDouble())
                             .build();
     }
 
@@ -111,7 +133,7 @@ public class StandaloneNeo4jRepository implements SimulationStateRepository
 
     private VelocityAndDirectionSensor toVelocityAndDirectionSensor(final Node node, final Coords lanternCoords)
     {
-        return VelocityAndDirectionSensorBuilder.builder()
+        return VelocityAndDirectionSensorBuilder.builder(configuration.getSimulationTimeStep())
                                                 .withCoords(lanternCoords)
                                                 .withRadius(node.get(RADIUS).asDouble())
                                                 .build();
@@ -133,31 +155,63 @@ public class StandaloneNeo4jRepository implements SimulationStateRepository
     }
 
     @Override
-    public Set<InternalActor> getActors()
+    public Configuration getConfiguration()
     {
-        try (final Session session = driver.session()) {
-            final Node lantern = extractSingleNode(session.run("MATCH (n:lantern) RETURN n").next());
-            return ImmutableSet.of(InternalActorBuilder.builder()
-                    .withId(Optional.of("KR01112"))
-                    .withPreviousCoords(ImmutableCoords.of(0, 0))
-                    .withCurrentCoords(ImmutableCoords.of(0, 0)) // FIXME should be configurable
-                    .withTarget(toJunction(session, lantern)) // FIXME based on current coords
-                    .withType(ActorType.VEHICLE)
-                    .withVelocity(1)
-                    .build());
-        }
+        return configuration;
     }
 
     @Override
-    public Configuration getConfiguration()
+    public Route getRoute()
     {
+        return route;
+    }
+
+    @Override
+    public Set<InternalActor> getActors()
+    {
+        final Set<InternalActor> actors = Sets.newHashSet();
         try (final Session session = driver.session()) {
-            final Node configuration = extractSingleNode(session.run("MATCH (c:configuration) RETURN c").next());
-            return ImmutableConfiguration.builder()
-                    .withSimulationDurationTime(configuration.get(DURATION_TIME).asInt())
-                    .withSimulationTimeStep(configuration.get(TIME_STEP).asLong())
-                    .withMeasurementToleranceAngle(configuration.get(ANGLE).asDouble())
-                    .build();
+            StatementResult vehicleResults = session.run("MATCH (v:vehicle) RETURN v");
+            while (vehicleResults.hasNext()) {
+                Node vehicle = extractSingleNode(vehicleResults.next());
+                actors.add(toInternalActor(session, vehicle, ActorType.VEHICLE));
+            }
+            StatementResult pedestrianResults = session.run("MATCH (p:pedestrian) RETURN p");
+            while (pedestrianResults.hasNext()) {
+                Node pedestrian = extractSingleNode(pedestrianResults.next());
+                actors.add(toInternalActor(session, pedestrian, ActorType.PEDESTRIAN));
+            }
+
+            return actors;
         }
+    }
+
+    private InternalActor toInternalActor(Session session, Node vehicle, ActorType type)
+    {
+        String startNodeId = vehicle.get(START_NODE_ID).asString();
+        String targetNodeId = vehicle.get(TARGET_NODE_ID).asString();
+        Coords startCoords = getNodeCoords(session, startNodeId);
+        Junction target = route.getJunctionOfId(targetNodeId);
+        return InternalActorBuilder.builder()
+                .withId(type == ActorType.VEHICLE ?
+                                vehicle.get(VEHICLE_ID).asString() :
+                                String.format("%s", pedestrianId++))
+                .withType(type)
+                .withPreviousCoords(startCoords)
+                .withCurrentCoords(startCoords)
+                .withTarget(target)
+                .withVelocity(vehicle.get(VELOCITY).asDouble())
+                .build();
+    }
+
+    private Coords getNodeCoords(Session session, String startNodeId)
+    {
+        String query = String.format("MATCH (x:lantern) WHERE x.nodeId = '%s' RETURN x", startNodeId);
+        StatementResult results = session.run(query);
+        if (results.hasNext()) {
+            Node startLantern = extractSingleNode(results.next());
+            return ImmutableCoords.of(startLantern.get(X).asDouble(), startLantern.get(Y).asDouble());
+        }
+        else throw new IllegalStateException("Node id references nonexistent node");
     }
 }

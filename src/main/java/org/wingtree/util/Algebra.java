@@ -4,7 +4,6 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.wingtree.beans.Coords;
 import org.wingtree.beans.InternalActor;
 
-//todo should use some algebraic library
 public class Algebra
 {
     public static double parallelAcceptanceDegreeError = Math.toRadians(10);

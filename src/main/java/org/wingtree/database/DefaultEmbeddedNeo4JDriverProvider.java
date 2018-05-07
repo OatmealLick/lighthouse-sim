@@ -17,14 +17,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @EnableConfigurationProperties
 public class DefaultEmbeddedNeo4JDriverProvider implements EmbeddedNeo4jDriverProvider
 {
-    //todo move to properties
     private static final String ID = "node_id";
     private static final String X = "x";
     private static final String Y = "y";
     private static final String RADIUS = "radius";
+    private static final String ANGLE = "angle";
     private static final String DURATION_TIME = "simulationDurationTime";
     private static final String TIME_STEP = "simulationTimeStep";
-    private static final String ANGLE = "measurementToleranceAngle";
     private static final Label LANTERN_LABEL = Label.label("lantern");
     private static final Label CAMERA_LABEL = Label.label("camera");
     private static final Label MOVEMENT_SENSOR_LABEL = Label.label("movement-sensor");
@@ -67,6 +66,7 @@ public class DefaultEmbeddedNeo4JDriverProvider implements EmbeddedNeo4jDriverPr
             camera.addLabel(CAMERA_LABEL);
             camera.setProperty(ID, "1");
             camera.setProperty(RADIUS, 4.0D);
+            camera.setProperty(ANGLE, 15.0D);
             final Node movementSensor = graphService.createNode();
             movementSensor.addLabel(MOVEMENT_SENSOR_LABEL);
             movementSensor.setProperty(ID, "1");
@@ -75,6 +75,7 @@ public class DefaultEmbeddedNeo4JDriverProvider implements EmbeddedNeo4jDriverPr
             velocityAndDirectionSensor.addLabel(VELOCITY_AND_DIRECTION_SENSOR_LABEL);
             velocityAndDirectionSensor.setProperty(ID, "1");
             velocityAndDirectionSensor.setProperty(RADIUS, 6.0D);
+            velocityAndDirectionSensor.setProperty(ANGLE, 15.0D);
 
             one.createRelationshipTo(two, CONNECTED_TO);
             two.createRelationshipTo(three, CONNECTED_TO);
@@ -94,7 +95,6 @@ public class DefaultEmbeddedNeo4JDriverProvider implements EmbeddedNeo4jDriverPr
             configuration.addLabel(CONFIGURATION);
             configuration.setProperty(DURATION_TIME, 60);
             configuration.setProperty(TIME_STEP, 500);
-            configuration.setProperty(ANGLE, 15);
 
             transaction.success();
         }
