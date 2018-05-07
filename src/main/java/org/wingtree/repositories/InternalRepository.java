@@ -4,18 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.wingtree.beans.ActorType;
-import org.wingtree.beans.Camera;
-import org.wingtree.beans.CameraBuilder;
-import org.wingtree.beans.ImmutableCoords;
-import org.wingtree.beans.ImmutableJunction;
-import org.wingtree.beans.InternalActor;
-import org.wingtree.beans.InternalActorBuilder;
-import org.wingtree.beans.Junction;
-import org.wingtree.beans.MovementSensor;
-import org.wingtree.beans.MovementSensorBuilder;
-import org.wingtree.beans.Route;
-import org.wingtree.beans.RouteBuilder;
+import org.wingtree.beans.*;
 
 import java.util.Optional;
 import java.util.Set;
@@ -27,8 +16,10 @@ import java.util.stream.Stream;
  */
 @Component
 @Profile("development")
-public class InternalRepository implements SimulationStateRepository {
-    final private Camera camera = CameraBuilder.builder()
+public class InternalRepository implements SimulationStateRepository
+{
+    private static final long TIME_STEP = 500;
+    final private Camera camera = CameraBuilder.builder(TIME_STEP)
             .withCoords(ImmutableCoords.of(0, 0))
             .withRadius(0.7f)
             .build();
@@ -63,12 +54,21 @@ public class InternalRepository implements SimulationStateRepository {
     @Override
     public Set<InternalActor> getActors() {
         return ImmutableSet.of(InternalActorBuilder.builder()
-                .withId(Optional.of("KR01112"))
+                .withId("KR01112")
                 .withCurrentCoords(ImmutableCoords.of(0, 0))
                 .withPreviousCoords(ImmutableCoords.of(1,0))
                 .withTarget(two)
                 .withType(ActorType.VEHICLE)
                 .withVelocity(1)
                 .build());
+    }
+
+    @Override
+    public Configuration getConfiguration()
+    {
+        return ImmutableConfiguration.builder()
+                .withSimulationDurationTime(60)
+                .withSimulationTimeStep(500)
+                .build();
     }
 }

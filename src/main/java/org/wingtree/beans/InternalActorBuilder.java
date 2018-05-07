@@ -9,7 +9,7 @@ public class InternalActorBuilder
 {
     private ActorType type;
     private double velocity;
-    private Optional<String> id;
+    private String id;
     private Coords currentCoords;
     private Coords previousCoords;
     private Junction target;
@@ -35,7 +35,7 @@ public class InternalActorBuilder
         return this;
     }
 
-    public InternalActorBuilder withId(final Optional<String> id)
+    public InternalActorBuilder withId(final String id)
     {
         this.id = id;
         return this;
@@ -66,9 +66,6 @@ public class InternalActorBuilder
         checkNotNull(currentCoords);
         checkNotNull(previousCoords);
         checkNotNull(target);
-        if(id == null) {
-            id = Optional.empty();
-        }
         return new InternalActor(type, velocity, id, currentCoords, previousCoords, target);
     }
 }

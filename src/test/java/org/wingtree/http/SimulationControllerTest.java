@@ -7,6 +7,7 @@ import org.wingtree.beans.SimulationState;
 import org.wingtree.repositories.InternalRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.withSettings;
@@ -33,10 +34,13 @@ public class SimulationControllerTest
         ApplicationContext applicationContextMock = createApplicationContextMockReturningDummySimulationState();
 
         // when
-        Junction junction = new SimulationController(applicationContextMock).getLantern("0");
+        Throwable shouldThrowNotFoundException =
+                catchThrowable(() -> new SimulationController(applicationContextMock).getLantern("0"));
 
         // then
-        assertThat(junction).extracting(Junction::getId).contains("not found");
+        assertThat(shouldThrowNotFoundException)
+                .isInstanceOf(NotFoundException.class);
+
     }
 
     private ApplicationContext createApplicationContextMockReturningDummySimulationState()
