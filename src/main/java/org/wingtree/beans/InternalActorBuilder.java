@@ -66,6 +66,6 @@ public class InternalActorBuilder
         checkNotNull(currentCoords);
         checkNotNull(previousCoords);
         checkNotNull(target);
-        return new InternalActor(type, velocity, Optional.ofNullable(id), currentCoords, previousCoords, target);
+        return new InternalActor(type, velocity, id, currentCoords, previousCoords, target);
     }
 }

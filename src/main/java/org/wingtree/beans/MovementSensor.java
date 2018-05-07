@@ -43,32 +43,4 @@ public class MovementSensor implements TrackingDevice
         sensingMovement = actors.stream()
                 .anyMatch(actor -> Algebra.isTargetInRadius(coords, radius, actor.getCurrentCoords()));
     }
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MovementSensor that = (MovementSensor) o;
-        return Double.compare(that.radius, radius) == 0 &&
-                sensingMovement == that.sensingMovement &&
-                Objects.equals(coords, that.coords);
-    }
-
-    @Override
-    public int hashCode()
-    {
-
-        return Objects.hash(coords, radius, sensingMovement);
-    }
-
-    @Override
-    public String toString()
-    {
-        return "MovementSensor{" +
-                "coords=" + coords +
-                ", radius=" + radius +
-                ", sensingMovement=" + sensingMovement +
-                '}';
-    }
 }

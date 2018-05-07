@@ -55,7 +55,9 @@ public class Route
     {
         return getJunctionOfId(id).getTrackingDevices()
                 .stream()
-                .filter(trackingDevice -> trackingDevice instanceof VelocityAndDirectionSensor)
+                .filter(trackingDevice ->
+                        trackingDevice instanceof VelocityAndDirectionSensor &&
+                        !(trackingDevice instanceof Camera))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
     }

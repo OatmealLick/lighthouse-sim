@@ -11,8 +11,11 @@ create (config:configuration{
 create
   (lantern1:lantern{nodeId:"1", x:0, y:0})
   -[:CONNECTED_TO]->(lantern2:lantern{nodeId:"2", x:10, y:0})
-  -[:CONNECTED_TO]->(lantern3:lantern{nodeId:"3", x:0, y:10});
-match (a:lantern{nodeId:"3"}), (b:lantern{nodeId:"1"}) create (a)-[:CONNECTED_TO]->(b);
+  -[:CONNECTED_TO]->(lantern3:lantern{nodeId:"4", x:0, y:10});
+create (lantern4:lantern{nodeId:"3", x:10, y:10});
+match (a:lantern{nodeId:"4"}), (b:lantern{nodeId:"1"}) create (a)-[:CONNECTED_TO]->(b);
+match (a:lantern{nodeId:"2"}), (b:lantern{nodeId:"3"}) create (a)-[:CONNECTED_TO]->(b);
+match (a:lantern{nodeId:"3"}), (b:lantern{nodeId:"4"}) create (a)-[:CONNECTED_TO]->(b);
 
 // Create tracking devices
 create (camera1:camera{nodeId:"1", radius:4.0, angle:15});

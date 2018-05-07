@@ -73,8 +73,7 @@ public class SimulationController
     {
         final SimulationState simulationState = applicationContext.getBean(SimulationState.class);
         return simulationState.getActors().stream()
-                .filter(actor -> actor.getId().isPresent())
-                .filter(actor -> actor.getId().get().equals(id))
+                .filter(actor -> actor.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException(String.format("Actor of id %s not found", id)));
     }
