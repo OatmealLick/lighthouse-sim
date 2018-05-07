@@ -10,6 +10,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+/**
+ * Java hard coded implementation of {@see SimulationStateRepository}. Destined for development use to facilitate
+ * test loop.
+ */
 @Component
 @Profile("development")
 public class InternalRepository implements SimulationStateRepository

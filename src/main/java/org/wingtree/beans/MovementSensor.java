@@ -5,6 +5,10 @@ import org.wingtree.util.Algebra;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * One of tracking devices. In the event of someone entering closer than radius, movement sensor sets its
+ * sensingMovement value to true.
+ */
 public class MovementSensor implements TrackingDevice
 {
     private Coords coords;

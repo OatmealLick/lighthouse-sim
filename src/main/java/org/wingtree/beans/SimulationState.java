@@ -6,6 +6,11 @@ import org.wingtree.repositories.SimulationStateRepository;
 
 import java.util.Set;
 
+/**
+ * With each simulation step the contents of this class are updated. It holds actors ({@see InternalActor}) and all
+ * static entities of
+ * simulation ({@see Junction}, {@see TrackingDevice})
+ */
 @Component
 public class SimulationState
 {

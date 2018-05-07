@@ -12,6 +12,9 @@ import java.io.File;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * {@inheritDoc}
+ */
 @Component
 @Profile("embedded-neo4j")
 @EnableConfigurationProperties

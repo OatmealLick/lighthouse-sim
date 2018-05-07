@@ -4,6 +4,9 @@ import org.wingtree.beans.*;
 
 import java.util.Set;
 
+/**
+ * Abstract interface providing Route and Simulation Actors.
+ */
 public interface SimulationStateRepository
 {
     Route getRoute();

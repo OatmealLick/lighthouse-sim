@@ -1,10 +1,15 @@
 package org.wingtree.beans;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.graph.ImmutableGraph;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
+/**
+ * This is the class holding graph of lanterns.
+ */
 public class Route
 {
     final ImmutableGraph<Junction> routeGraph;
@@ -19,10 +24,40 @@ public class Route
         return routeGraph.nodes();
     }
 
-    public Junction getJunctionOfId(String id)
+    public Junction getJunctionOfId(final String id)
     {
-        return routeGraph.nodes().stream().filter(junction -> junction.getId().equals(id)).findFirst()
-                .orElse(ImmutableJunction.of("not found", ImmutableCoords.of(0, 0), ImmutableSet.of()));
+        return routeGraph.nodes()
+                .stream()
+                .filter(junction -> junction.getId().equals(id))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+    }
+
+    public TrackingDevice getCameraOfId(final String id)
+    {
+        return getJunctionOfId(id).getTrackingDevices()
+                .stream()
+                .filter(trackingDevice -> trackingDevice instanceof Camera)
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+    }
+
+    public TrackingDevice getMovementSensorOfId(final String id)
+    {
+        return getJunctionOfId(id).getTrackingDevices()
+                .stream()
+                .filter(trackingDevice -> trackingDevice instanceof MovementSensor)
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+    }
+
+    public TrackingDevice getVelocityAndDirectionSensorOfId(final String id)
+    {
+        return getJunctionOfId(id).getTrackingDevices()
+                .stream()
+                .filter(trackingDevice -> trackingDevice instanceof VelocityAndDirectionSensor)
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
     }
 
     public Junction getNextRandomizedTarget(Junction currentJunction)

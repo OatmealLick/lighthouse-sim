@@ -4,6 +4,9 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.wingtree.beans.Coords;
 import org.wingtree.beans.InternalActor;
 
+/**
+ * Static utility class with methods regarding basic algebraic computations.
+ */
 public class Algebra
 {
     public static double parallelAcceptanceDegreeError = Math.toRadians(10);

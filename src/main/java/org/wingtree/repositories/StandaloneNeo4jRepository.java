@@ -15,6 +15,10 @@ import org.wingtree.database.StandaloneNeo4jDriverProvider;
 
 import java.util.Set;
 
+/**
+ * Production implementation of {@see SimulationStateRepository} using standalone neo4j. It needs running instance of
+ * neo4j and connection parameters.
+ */
 @Component
 @Profile({"production"})
 public class StandaloneNeo4jRepository implements SimulationStateRepository

@@ -1,6 +1,14 @@
 package org.wingtree.beans;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+/**
+ * Camera is one of TrackingDevice. It holds actors which are currently in view. It also stores information whether
+ * they are approaching or leaving, as well as their speed.
+ */
 
 public class Camera extends VelocityAndDirectionSensor
 {
