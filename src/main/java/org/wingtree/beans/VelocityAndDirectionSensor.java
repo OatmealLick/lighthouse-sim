@@ -59,7 +59,7 @@ public class VelocityAndDirectionSensor implements TrackingDevice
     protected boolean isMeasurementAcceptable(InternalActor actor)
     {
         return Algebra.isTargetInRadius(coords, radius, actor.getCurrentCoords()) &&
-                Algebra.isTargetMovingInParallelDirection(coords, actor);
+                Algebra.isTargetMovingInParallelDirection(coords, actor, angle);
     }
 
     protected Reading createReadingFor(InternalActor actor)

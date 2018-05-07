@@ -9,8 +9,8 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
 public class SimulationTest
@@ -166,7 +166,7 @@ public class SimulationTest
                                                        .withTarget(target2)
                                                        .build();
         ApplicationContext applicationCtxMock = mock(ApplicationContext.class, withSettings().stubOnly());
-        when(applicationCtxMock.getBean(SimulationState.class)).thenReturn(
+        given(applicationCtxMock.getBean(SimulationState.class)).willReturn(
                 customSimulationStateOne(ImmutableSet.of(vehicle, pedestrian)));
 
         // when

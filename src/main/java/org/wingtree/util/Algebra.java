@@ -9,8 +9,6 @@ import org.wingtree.beans.InternalActor;
  */
 public class Algebra
 {
-    public static double parallelAcceptanceDegreeError = Math.toRadians(10);
-
     public static boolean isTargetInRadius(final Coords homeCoords,
                                            final double radius,
                                            final Coords targetCoords)
@@ -19,14 +17,16 @@ public class Algebra
         return radius >= distanceBetweenCoords;
     }
 
-    public static boolean isTargetMovingInParallelDirection(final Coords homeCoords, final InternalActor actor)
+    public static boolean isTargetMovingInParallelDirection(final Coords homeCoords,
+                                                            final InternalActor actor,
+                                                            final double acceptedAngle)
     {
         Vector2D previous = new Vector2D(actor.getPreviousCoords().getX() - homeCoords.getX(),
                                          actor.getPreviousCoords().getY() - homeCoords.getY());
         Vector2D current = new Vector2D(actor.getCurrentCoords().getX() - homeCoords.getX(),
                                         actor.getCurrentCoords().getY() - homeCoords.getY());
 
-        return getRelativeAngle(previous, current) <= parallelAcceptanceDegreeError;
+        return getRelativeAngle(previous, current) <= Math.toRadians(acceptedAngle);
     }
 
     public static double getAbsoluteDistance(Coords coords1, Coords coords2)
