@@ -1,5 +1,6 @@
 package org.wingtree.beans;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.wingtree.util.Algebra;
 
@@ -8,18 +9,26 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * One of tracking devices. Holds data in readings {@see VelocityAndDirectionSensorReading}
+ * One of tracking devices. Holds data in readings {@see Reading}
  */
 public class VelocityAndDirectionSensor implements TrackingDevice
 {
     protected Coords coords;
     protected double radius;
-    private List<VelocityAndDirectionSensorReading> readings;
+    protected double angle;
+    @JsonIgnore
+    protected double timeStep;
+    private List<Reading> readings;
 
-    public VelocityAndDirectionSensor(final Coords coords, final double radius)
+    VelocityAndDirectionSensor(final Coords coords,
+                               final double radius,
+                               final double angle,
+                               final long timeStep)
     {
         this.coords = coords;
         this.radius = radius;
+        this.angle = angle;
+        this.timeStep = (double) timeStep / 1000;
         this.readings = new ArrayList<>();
     }
 
@@ -33,7 +42,7 @@ public class VelocityAndDirectionSensor implements TrackingDevice
         return radius;
     }
 
-    public List<VelocityAndDirectionSensorReading> getReadings()
+    public List<Reading> getReadings()
     {
         return readings;
     }
@@ -50,16 +59,15 @@ public class VelocityAndDirectionSensor implements TrackingDevice
     protected boolean isMeasurementAcceptable(InternalActor actor)
     {
         return Algebra.isTargetInRadius(coords, radius, actor.getCurrentCoords()) &&
-                Algebra.isTargetMovingInParallelDirection(coords, actor);
+                Algebra.isTargetMovingInParallelDirection(coords, actor, angle);
     }
 
-    protected VelocityAndDirectionSensorReading createReadingFor(InternalActor actor)
+    protected Reading createReadingFor(InternalActor actor)
     {
-        return ImmutableVelocityAndDirectionSensorReading.of(getMovementDirection(actor),
-                                                             getRelativeMovementSpeed(actor));
+        return new Reading(getMovementDirection(actor), getRelativeMovementSpeed(actor));
     }
 
-    private Direction getMovementDirection(InternalActor actor)
+    protected Direction getMovementDirection(InternalActor actor)
     {
         double previousDistanceFromSensor = Algebra.getAbsoluteDistance(coords, actor.getPreviousCoords());
         double currentDistanceFromSensor = Algebra.getAbsoluteDistance(coords, actor.getCurrentCoords());
@@ -68,7 +76,7 @@ public class VelocityAndDirectionSensor implements TrackingDevice
         else return Direction.LEAVING;
     }
 
-    private double getRelativeMovementSpeed(InternalActor actor)
+    protected double getRelativeMovementSpeed(InternalActor actor)
     {
         Vector2D previous = new Vector2D(coords.getX() - actor.getPreviousCoords().getX(),
                                          coords.getY() - actor.getPreviousCoords().getY());
@@ -77,7 +85,6 @@ public class VelocityAndDirectionSensor implements TrackingDevice
         double angle = Algebra.getRelativeAngle(previous, current);
         double projectedVectorNorm = current.getNorm() * Math.cos(angle);
 
-        double intervalInSeconds = 0.5; // TODO CONFIGURATION
-        return Math.abs(previous.getNorm() - projectedVectorNorm) / intervalInSeconds;
+        return Math.abs(previous.getNorm() - projectedVectorNorm) / timeStep;
     }
 }

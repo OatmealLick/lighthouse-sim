@@ -29,18 +29,36 @@ public class EmbeddedNeo4jRepository implements SimulationStateRepository {
     private static final String X = "x";
     private static final String Y = "y";
     private static final String RADIUS = "radius";
-    private static final String SENSING_MOVEMENT = "sensing_movement";
-    private static final Label LANTERN_LABEL = Label.label("lantern");
-    private static final Label CAMERA_LABEL = Label.label("camera");
-    private static final Label MOVEMENT_SENSOR_LABEL = Label.label("movement-sensor");
+    private static final String ANGLE = "angle";
+    private static final String DURATION_TIME = "simulationDurationTime";
+    private static final String TIME_STEP = "simulationTimeStep";
+    private static final Label CONFIGURATION = Label.label("configuration");
     private static final RelationshipType CONNECTED_TO = RelationshipType.withName("connected_to");
     private static final RelationshipType HAS = RelationshipType.withName("has");
 
     private final GraphDatabaseService graphService;
+    private final Configuration configuration;
 
     @Autowired
     public EmbeddedNeo4jRepository(final EmbeddedNeo4jDriverProvider databaseServiceProvider) {
         graphService = databaseServiceProvider.get();
+        configuration = loadConfiguration();
+    }
+
+    private Configuration loadConfiguration()
+    {
+        try (final Transaction transaction = graphService.beginTx()) {
+            Node configuration = graphService.findNodes(CONFIGURATION)
+                                             .stream()
+                                             .findFirst()
+                                             .orElseThrow(IllegalStateException::new);
+            transaction.success();
+
+            return ImmutableConfiguration.builder()
+                                         .withSimulationDurationTime((int) configuration.getProperty(DURATION_TIME))
+                                         .withSimulationTimeStep((long) configuration.getProperty(TIME_STEP))
+                                         .build();
+        }
     }
 
     @Override
@@ -108,9 +126,10 @@ public class EmbeddedNeo4jRepository implements SimulationStateRepository {
         final Label label = Seq.seq(node.getLabels()).findFirst().orElseThrow(IllegalStateException::new);
         switch (label.name()) {
             case "camera":
-                return CameraBuilder.builder()
+                return CameraBuilder.builder(configuration.getSimulationTimeStep())
                                     .withCoords(lanternCoords)
                                     .withRadius((double) checkNotNull(node.getProperty(RADIUS)))
+                                    .withAngle((double) checkNotNull(node.getProperty(ANGLE)))
                                     .build();
             case "movement-sensor":
                 return MovementSensorBuilder.builder()
@@ -118,9 +137,10 @@ public class EmbeddedNeo4jRepository implements SimulationStateRepository {
                                             .withRadius((double) checkNotNull(node.getProperty(RADIUS)))
                                             .build();
             case "velocity-and-direction-sensor":
-                return VelocityAndDirectionSensorBuilder.builder()
+                return VelocityAndDirectionSensorBuilder.builder(configuration.getSimulationTimeStep())
                                                         .withCoords(lanternCoords)
                                                         .withRadius((double) checkNotNull(node.getProperty(RADIUS)))
+                                                        .withAngle((double) checkNotNull(node.getProperty(ANGLE)))
                                                         .build();
             case "lantern":
                 throw new IllegalStateException("Data model error. Given node is a lantern, and it is supposed to be tracking device");
@@ -140,7 +160,7 @@ public class EmbeddedNeo4jRepository implements SimulationStateRepository {
                     .orElseThrow(IllegalStateException::new));
             transaction.success();
             return ImmutableSet.of(InternalActorBuilder.builder()
-                    .withId(Optional.of("KR01112"))
+                    .withId("KR01112")
                     .withCurrentCoords(ImmutableCoords.of(0, 0))
                     .withPreviousCoords(ImmutableCoords.of(0, 0))
                     .withTarget(junction)
@@ -148,5 +168,11 @@ public class EmbeddedNeo4jRepository implements SimulationStateRepository {
                     .withVelocity(1)
                     .build());
         }
+    }
+
+    @Override
+    public Configuration getConfiguration()
+    {
+        return configuration;
     }
 }

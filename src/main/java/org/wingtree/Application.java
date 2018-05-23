@@ -3,6 +3,7 @@ package org.wingtree;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.wingtree.beans.Configuration;
 import org.wingtree.beans.SimulationState;
 import org.wingtree.simulation.Simulation;
 
@@ -24,10 +25,12 @@ public class Application
     {
         final Timer timer = new Timer(true);
         Simulation simulation = context.getBean(Simulation.class);
-        long intervalInMillis = context.getBean(SimulationState.class).getIntervalInMillis();
+        SimulationState simulationState = context.getBean(SimulationState.class);
+        Configuration configuration = simulationState.getConfiguration();
+        long intervalInMillis = configuration.getSimulationTimeStep();
+        long simulationDurationTimeInMillis = configuration.getSimulationDurationTime();
 
         timer.scheduleAtFixedRate(simulation, 0, intervalInMillis);
-        int simulationTimeInMillis = 60000; // TODO CONFIGURATION
-        Thread.sleep(simulationTimeInMillis);
+        Thread.sleep(simulationDurationTimeInMillis);
     }
 }

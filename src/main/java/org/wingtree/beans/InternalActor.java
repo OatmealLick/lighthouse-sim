@@ -1,5 +1,7 @@
 package org.wingtree.beans;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Objects;
 import java.util.Optional;
 
@@ -11,14 +13,15 @@ public class InternalActor
 {
     private final ActorType type;
     private final double velocityInMetersPerSec;
-    private final Optional<String> id;
+    private final String id;
     private Coords currentCoords;
     private Coords previousCoords;
+    @JsonIgnore
     private Junction target;
 
     InternalActor(final ActorType type,
                   final double velocityInMetersPerSec,
-                  final Optional<String> id,
+                  final String id,
                   final Coords currentCoords,
                   final Coords previousCoords,
                   final Junction target)
@@ -41,7 +44,7 @@ public class InternalActor
         return velocityInMetersPerSec;
     }
 
-    public Optional<String> getId()
+    public String getId()
     {
         return id;
     }

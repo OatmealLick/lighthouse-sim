@@ -7,7 +7,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 public class SimulationStateBuilder
 {
-    private long intervalInMillis;
+    private Configuration configuration;
     private Route route;
     private Set<InternalActor> actors;
 
@@ -20,9 +20,9 @@ public class SimulationStateBuilder
         return new SimulationStateBuilder();
     }
 
-    public SimulationStateBuilder withIntervalInMillis(final long intervalInMillis)
+    public SimulationStateBuilder withConfiguration(final Configuration configuration)
     {
-        this.intervalInMillis = intervalInMillis;
+        this.configuration = configuration;
         return this;
     }
 
@@ -40,12 +40,12 @@ public class SimulationStateBuilder
 
     public SimulationState build()
     {
-        checkState(intervalInMillis > 0);
+        checkNotNull(configuration);
+        checkState(configuration.getSimulationTimeStep() > 0);
+        checkState(configuration.getSimulationDurationTime() > 0);
         checkNotNull(route);
         checkNotNull(actors);
 
-        return new SimulationState(intervalInMillis,
-                                   route,
-                                   actors);
+        return new SimulationState(configuration, route, actors);
     }
 }
